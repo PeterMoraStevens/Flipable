@@ -1,9 +1,8 @@
 // Import required modules
-import OpenAI from "openai";
-const openai = new OpenAI(process.env.OPENAI_API_KEY);
-
 const dotenv = require("dotenv");
 dotenv.config();
+const OpenAI = require("openai")
+const openai = new OpenAI(process.env.OPENAI_API_KEY);
 const express = require("express");
 const cors = require("cors");
 const app = express();
