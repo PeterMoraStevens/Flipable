@@ -15,7 +15,7 @@ app.use(express.static('dist'));
 let grading;
 async function importGrading() {
   try {
-    const module = await import("./../AI/grading.js");
+    const module = await import("./grading");
     grading = module.default;
   } catch (error) {
     console.error("Error importing grading.js:", error);
