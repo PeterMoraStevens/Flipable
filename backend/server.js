@@ -1,4 +1,7 @@
 // Import required modules
+import OpenAI from "openai";
+const openai = new OpenAI(process.env.OPENAI_API_KEY);
+
 const dotenv = require("dotenv");
 dotenv.config();
 const express = require("express");
@@ -12,17 +15,10 @@ app.use(express.static('dist'));
 // app.use(cors());
 // Import grading module
 
-let grading;
-async function importGrading() {
-  try {
-    const module = await import("./grading");
-    grading = module.default;
-  } catch (error) {
-    console.error("Error importing grading.js:", error);
-  }
-}
 
-importGrading();
+//Syntax for getting models response: completion.choices[0].message.content
+
+
 // Set up MongoDB connection
 
 const DBURL = process.env.MONGODB_DATABASE_URL;
@@ -74,6 +70,62 @@ const userSchema = new Schema({
     default: [],
   },
 });
+
+async function grade(def1, def2, word) {
+  const completion = await openai.chat.completions.create({
+    messages: [
+      {
+        role: "system",
+        content:
+          "You are a helpful assistant who evaluates the similarity between two definitions.",
+      }, // Prompt introduction
+      {
+        role: "user",
+        content: `I'm presenting two definitions for the term "${word}".`,
+      },
+      { role: "assistant", content: `Definition 1: ${def1}` },
+      { role: "assistant", content: `Definition 2: ${def2}` },
+      {
+        role: "user",
+        content: `Compare the semantic similarity between two input definitions and output 'yes' if they convey similar meanings, even with potential syntactic differences, and 'no' if their meanings significantly differ. Focus on capturing the essence of their definitions rather than strict syntactical matching.`,
+      },
+    ],
+    model: "gpt-3.5-turbo",
+  });
+
+  //   console.log(completion.choices[0]);
+  if (completion.choices[0].message.content === "Yes") {
+    //gets the checks the response
+    return true;
+  }
+  return false;
+}
+
+/*Possible Example array for realDefs and testDefs
+    realDefs = [{term: "hello", def: "a greeting"}, {term: "goodbye", def: "a farewell"}]
+    testDefs = [{term: "hello", def: "a greeting"}, {term: "goodbye", def: "a farewell"}
+
+*/
+
+async function gradeTest(realDefs, testDefs) {
+  let score = 0;
+  let finalScore = []; //holds all questions correctness 0 - wrong | 1 - right
+  for (let i = 0; i < realDefs.length; i++) {
+    let correct = await grade(
+      realDefs[i].definition,
+      testDefs[i],
+      realDefs[i].term
+    );
+    if (correct) {
+      finalScore.push(1);
+      score++;
+    } else {
+      finalScore.push(0);
+    }
+  }
+  finalScore.push(score); //last index is the final score
+  return finalScore;
+}
 
 // Create User model based on the schema
 const User = mongoose.model("User", userSchema);
