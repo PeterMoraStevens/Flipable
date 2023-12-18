@@ -1,22 +1,20 @@
 // Import required modules
-const dotenv = require("dotenv");
-dotenv.config();
-const OpenAI = require("openai")
+const dotenv = require("dotenv").config();
+const OpenAI = require("openai");
 const openai = new OpenAI(process.env.OPENAI_API_KEY);
 const express = require("express");
 const cors = require("cors");
 const app = express();
+const path = require('path');
 const PORT = process.env.PORT || 3001;
 const mongoose = require("mongoose");
 
 app.use(express.json());
-app.use(express.static('dist'));
+app.use(express.static("dist"));
 // app.use(cors());
 // Import grading module
 
-
 //Syntax for getting models response: completion.choices[0].message.content
-
 
 // Set up MongoDB connection
 
@@ -367,6 +365,10 @@ app.post("/updatePrivate", async (req, res) => {
     console.log(err);
     res.status(400).send(err);
   }
+});
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "dist", "index.html"));
 });
 
 // Start the server
