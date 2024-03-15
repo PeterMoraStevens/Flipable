@@ -1,9 +1,9 @@
 // a component which will conditionally render our Navbar as to not require 3 different components
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { UserButton, SignedIn, SignedOut } from "@clerk/nextjs";
-import { FaPlus, FaCaretLeft } from "react-icons/fa";
+import { FaPlus, FaCaretLeft, FaFireAlt } from "react-icons/fa";
 import axios from "axios";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useUser } from "@clerk/clerk-react";
 
 const Navbars = ({
@@ -16,12 +16,24 @@ const Navbars = ({
   const { deckNum } = useParams();
   const navigate = useNavigate();
   const user = useUser().user;
+  const userId = useUser().user?.id.toString();
   const [deckName, setDeckName] = useState("");
   const [deckDesc, setDeckDesc] = useState("");
   const [priv, setPriv] = useState(false);
   const [deckCategory, setDeckCategory] = useState("Math");
   const [flashcardTerm, setFlashcardTerm] = useState("");
   const [flashcardDef, setFlashcardDef] = useState("");
+  const [streak, setStreak] = useState(0);
+
+  useEffect(() => {
+    axios
+      .get("/getUser", {
+        params: {
+          userId: userId,
+        },
+      })
+      .then((res) => setStreak(res.currentStreak));
+  }, []);
 
   if (page === "landing") {
     return (
@@ -34,10 +46,22 @@ const Navbars = ({
               </Link>
             </div>
             <Link
+              to="/flashcards"
+              className="btn btn-ghost text-base text-white"
+            >
+              Decks
+            </Link>
+            <Link
               to="/community"
               className="btn btn-ghost text-base text-white"
             >
               Community
+            </Link>
+            <span>
+              <FaFireAlt color="white" /> {streak}
+            </span>
+            <Link to="/stats" className="btn btn-ghost text-base text-white">
+              Stats
             </Link>
             <div className="flex-2 mr-2">
               <UserButton />
@@ -78,6 +102,7 @@ const Navbars = ({
     setDeckName("");
     setDeckDesc("");
     setDeckCategory("Math");
+    setPriv(false);
   };
 
   const handleClose = () => {
@@ -106,6 +131,7 @@ const Navbars = ({
     setDeckDesc("");
     setDeckName("");
     setDeckCategory("");
+    setPriv(false);
   };
 
   if (page == "decks") {
@@ -237,12 +263,6 @@ const Navbars = ({
     setFlashcardTerm("");
   };
 
-  const handleTest = () => {
-    axios
-      .post("/incrementTests", { userId: user?.id.toString() })
-      .catch((err) => console.log(err));
-  };
-
   if (page == "flashcards") {
     return (
       <div className="navbar glass top-0 fixed z-50 bg-neutral">
@@ -276,9 +296,7 @@ const Navbars = ({
                 <Link to="flashcard-practice">Flashcards</Link>
               </li>
               <li>
-                <Link to="test" onClick={handleTest}>
-                  Test
-                </Link>
+                <Link to="test">Test</Link>
               </li>
             </ul>
           </div>
@@ -335,7 +353,7 @@ const Navbars = ({
     );
   }
 
-  if (page == "flashcard-practice" || page == "test" || page == "profile") {
+  if (page == "flashcard-practice" || page == "test") {
     return (
       <div className="navbar glass top-0 fixed z-50 bg-neutral">
         <div className="flex-1">
@@ -359,6 +377,30 @@ const Navbars = ({
     );
   }
 
+  if (page == "profile") {
+    return (
+      <div className="navbar glass top-0 fixed z-50 bg-neutral">
+        <div className="flex-1">
+          <Link to="/" className="btn btn-ghost text-lg text-white">
+            Quizify
+          </Link>
+          <Link to="/" className="btn btn-ghost text-md text-white">
+            <FaCaretLeft></FaCaretLeft>Back
+          </Link>
+        </div>
+        <Link to="/flashcards" className="btn btn-ghost text-base text-white">
+          Decks
+        </Link>
+        <Link to="/community" className="btn btn-ghost text-base text-white">
+          Community
+        </Link>
+        <div className="flex-none mr-2">
+          <UserButton />
+        </div>
+      </div>
+    );
+  }
+
   if (page == "community") {
     return (
       <div className="navbar glass top-0 fixed z-50 bg-neutral">
@@ -366,13 +408,13 @@ const Navbars = ({
           <Link to="/" className="btn btn-ghost text-lg text-white">
             Quizify
           </Link>
-          <button
-            onClick={() => navigate(-1)}
-            className="btn btn-ghost text-md text-white"
-          >
+          <Link to="/" className="btn btn-ghost text-md text-white">
             <FaCaretLeft></FaCaretLeft>Back
-          </button>
+          </Link>
         </div>
+        <Link to="/flashcards" className="btn btn-ghost text-base text-white">
+          Decks
+        </Link>
         <Link to="/stats" className="btn btn-ghost text-base text-white">
           Stats
         </Link>

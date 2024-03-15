@@ -38,8 +38,6 @@ const CommunityDeck = ({ i, title, desc, category, communityDecks }) => {
         }, 2000);
       })
       .catch((err) => console.log(err));
-
-    axios.post(`/incrementDeck`, idIncrement).catch((err) => console.log(err));
   };
 
   return (

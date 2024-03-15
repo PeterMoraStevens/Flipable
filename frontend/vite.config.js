@@ -44,23 +44,27 @@ export default defineConfig({
       },
       "/deleteCard": {
         target: "http://localhost:3001",
-        changeOrigin: true
+        changeOrigin: true,
       },
       "/deleteDecks": {
         target: "http://localhost:3001",
-        changeOrigin: true
+        changeOrigin: true,
       },
       "/getUser": {
         target: "http://localhost:3001",
-        changeOrigin: true
+        changeOrigin: true,
       },
       "/getCommunityDecks": {
         target: "http://localhost:3001",
-        changeOrigin: true
+        changeOrigin: true,
       },
       "/updatePrivate": {
         target: "http://localhost:3001",
-        changeOrigin: true
+        changeOrigin: true,
+      },
+      "/test": {
+        target: "http://localhost:3001",
+        changeOrigin: true,
       },
     },
   },

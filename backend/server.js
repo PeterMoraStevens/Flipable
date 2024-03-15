@@ -1,18 +1,18 @@
 // Import required modules
+const grading = require("./AI/grading.js");
 const dotenv = require("dotenv").config();
 const OpenAI = require("openai");
 const openai = new OpenAI(process.env.OPENAI_API_KEY);
 const express = require("express");
 const cors = require("cors");
 const app = express();
-const path = require('path');
+const path = require("path");
 const PORT = process.env.PORT || 3001;
 const mongoose = require("mongoose");
 
 app.use(express.json());
 app.use(express.static("dist"));
-// app.use(cors());
-// Import grading module
+app.use(cors());
 
 //Syntax for getting models response: completion.choices[0].message.content
 
@@ -68,62 +68,6 @@ const userSchema = new Schema({
   },
 });
 
-async function grade(def1, def2, word) {
-  const completion = await openai.chat.completions.create({
-    messages: [
-      {
-        role: "system",
-        content:
-          "You are a helpful assistant who evaluates the similarity between two definitions.",
-      }, // Prompt introduction
-      {
-        role: "user",
-        content: `I'm presenting two definitions for the term "${word}".`,
-      },
-      { role: "assistant", content: `Definition 1: ${def1}` },
-      { role: "assistant", content: `Definition 2: ${def2}` },
-      {
-        role: "user",
-        content: `Compare the semantic similarity between two input definitions and output 'yes' if they convey similar meanings, even with potential syntactic differences, and 'no' if their meanings significantly differ. Focus on capturing the essence of their definitions rather than strict syntactical matching.`,
-      },
-    ],
-    model: "gpt-3.5-turbo",
-  });
-
-  //   console.log(completion.choices[0]);
-  if (completion.choices[0].message.content === "Yes") {
-    //gets the checks the response
-    return true;
-  }
-  return false;
-}
-
-/*Possible Example array for realDefs and testDefs
-    realDefs = [{term: "hello", def: "a greeting"}, {term: "goodbye", def: "a farewell"}]
-    testDefs = [{term: "hello", def: "a greeting"}, {term: "goodbye", def: "a farewell"}
-
-*/
-
-async function gradeTest(realDefs, testDefs) {
-  let score = 0;
-  let finalScore = []; //holds all questions correctness 0 - wrong | 1 - right
-  for (let i = 0; i < realDefs.length; i++) {
-    let correct = await grade(
-      realDefs[i].definition,
-      testDefs[i],
-      realDefs[i].term
-    );
-    if (correct) {
-      finalScore.push(1);
-      score++;
-    } else {
-      finalScore.push(0);
-    }
-  }
-  finalScore.push(score); //last index is the final score
-  return finalScore;
-}
-
 // Create User model based on the schema
 const User = mongoose.model("User", userSchema);
 
@@ -132,6 +76,14 @@ app.get("/getDecks", async (req, res) => {
   try {
     const user = await User.findOne({ userId: req.query.userId });
     if (!user) {
+      User.create({
+        userId: req.query.userId,
+        testsTaken: 0,
+        cardsCreated: 0,
+        decksCreated: 0,
+        practicedToday: false,
+        decks: [],
+      });
       console.log("User Not Found");
       return res.status(404).send("User Not Found");
     }
@@ -278,15 +230,19 @@ app.get("/getUser", async (req, res) => {
       testsTaken: currentUser.testsTaken,
       decksCreated: currentUser.decksCreated,
       cardsCreated: currentUser.cardsCreated,
+      currentStreak: currentUser.currentStreak,
+      longestStreak: currentUser.longestStreak,
     };
     res.status(200).json(response);
   } catch (err) {
-    const response = {
+    User.create({
+      userId: req.query.userId,
       testsTaken: 0,
-      decksCreated: 0,
       cardsCreated: 0,
-    };
-    console.error(err);
+      decksCreated: 0,
+      practicedToday: false,
+      decks: [],
+    });
     res.status(400).send(err).json(response);
   }
 });
@@ -337,6 +293,7 @@ app.get("/getCommunityDecks", async (req, res) => {
   try {
     let allDecks = [];
     const users = await User.find({});
+
     // console.log(users)
     //for every person, for every deck, add public decks to the alldecks array
     for (let i = 0; i < users.length; i++) {

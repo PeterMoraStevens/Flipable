@@ -1,6 +1,5 @@
-import OpenAI from "openai";
-import dotenv from "dotenv";
-dotenv.config();
+const dotenv = require("dotenv").config();
+const OpenAI = require("openai");
 const openai = new OpenAI(process.env.OPENAI_API_KEY);
 
 //Syntax for getting models response: completion.choices[0].message.content
@@ -46,6 +45,7 @@ let testDefs = ["A way to great someone", "A banana"];
 let terms = ["hello", "goodbye"];
 
 async function gradeTest(realDefs, testDefs) {
+  console.log("starting grading");
   let score = 0;
   let finalScore = []; //holds all questions correctness 0 - wrong | 1 - right
   for (let i = 0; i < realDefs.length; i++) {
@@ -68,4 +68,6 @@ async function gradeTest(realDefs, testDefs) {
 // var score =  await gradeTest(realDefs, testDefs, terms);
 // console.log(score)
 
-export default { gradeTest };
+module.exports = {
+  gradeTest: gradeTest,
+};
