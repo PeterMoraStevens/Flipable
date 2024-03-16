@@ -37,7 +37,7 @@ function Stats() {
   return (
     <div>
       <Navbars page={"profile"}></Navbars>
-      <div className="hero min-h-screen mt-[50px]">
+      <div className="hero min-h-screen">
         <div className="hero-content flex-col lg:flex-row-reverse">
           <div className="max-w-2xl">
             <h1 className="text-7xl">

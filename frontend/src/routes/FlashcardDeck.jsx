@@ -108,7 +108,7 @@ const FlashcardDeck = () => {
         flashCards={flashCards}
         setFlashCards={setFlashCards}
       ></Navbars>
-      <div className="mt-24 bg-neutral"></div>
+      <div className="bg-neutral"></div>
       <div className="min-h-screen flex justify-center items-start mb-8">
         <ul className="grid lg:grid-cols-3 sm:grid-cols-2 gap-4 m-4">
           {flashCards.map((card, i) => (

@@ -5,8 +5,8 @@ const Flashcard = ({ term, definition, onDelete, i }) => {
       <label className="swap swap-flip text-9xl ">
         <input type="checkbox" />
         <div className="card items-center text-center swap-off bg-base-100 h-64 w-80 justify-center border border-primary">
-          <div className="bg-primary border border-primary rounded">
-            <p className="card-title text-base-100 font-bold text-2xl ml-3 mr-3 mb-1 ">
+          <div className="bg-primary border border-primary rounded max-w-[80%] w-auto">
+            <p className="card-title text-base-100 font-bold text-2xl ml-3 mr-3 mb-1">
               {term}
             </p>
           </div>

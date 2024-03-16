@@ -156,7 +156,6 @@ function FlashcardsPractice() {
   return (
     <>
       <Navbars page="flashcard-practice"></Navbars>
-      <div className="mt-16"></div>
       <div className="min-h-screen flex flex-col items-center justify-center overflow-hidden">
         <h1 className=" font-thin text-3xl">Welcome to Practice</h1>
         <div

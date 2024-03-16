@@ -7,7 +7,6 @@ const Invalid = () => {
   return (
     <>
       <Navbars page="landing" />
-      <div className="mt-16"/>
       <div
         className="hero min-h-screen bg-contain bg-no-repeat"
         style={{

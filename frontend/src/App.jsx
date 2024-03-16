@@ -6,6 +6,7 @@ import {
   SignUp,
   RedirectToSignIn,
 } from "@clerk/clerk-react";
+import { neobrutalism, dark } from "@clerk/themes";
 import { Route, Routes, BrowserRouter, useNavigate } from "react-router-dom";
 import { useState, createContext } from "react";
 import Landing from "./routes/Landing";
@@ -45,6 +46,16 @@ const ClerkRoutes = () => {
       <ClerkProvider
         publishableKey={clerkPubKey}
         navigate={(to) => navigate(to)}
+        appearance={{
+          baseTheme: [neobrutalism],
+          variables: {
+            colorPrimary: "green",
+          },
+          signIn: {
+            baseTheme: [neobrutalism],
+            variables: { colorPrimary: "blue" },
+          },
+        }}
       >
         <Routes>
           <Route path="/" element={<Landing />} />

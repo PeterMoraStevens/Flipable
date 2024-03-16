@@ -59,7 +59,7 @@ const Community = () => {
   return (
     <>
       <Navbars page="community"></Navbars>
-      <div className="mt-24 bg-neutral"></div>
+      <div className="bg-neutral"></div>
       <div className=" min-h-screen">
         <ul className="grid lg:grid-cols-3 sm:grid-cols-2 gap-4 m-4">
           {communityDecks.map((deck, i) => (

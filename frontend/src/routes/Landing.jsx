@@ -27,7 +27,6 @@ const Landing = () => {
       className="flex flex-col items-center bg-neutral"
     >
       <Navbars page={"landing"}></Navbars>
-      <div className="mt-16"></div>
       <motion.section
         initial="hidden"
         animate="visible"

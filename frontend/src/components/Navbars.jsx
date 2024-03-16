@@ -64,7 +64,7 @@ const Navbars = ({
               Stats
             </Link>
             <div className="flex-2 mr-2">
-              <UserButton />
+              <UserButton afterSignOutUrl="/" />
             </div>
           </div>
         </SignedIn>
@@ -136,103 +136,204 @@ const Navbars = ({
 
   if (page == "decks") {
     return (
-      <div className="navbar glass top-0 fixed z-50 bg-neutral">
-        <div className="flex-1">
-          <Link to="/" className="btn btn-ghost text-lg text-white">
-            Quizify
-          </Link>
-          <Link to="/" className="btn btn-ghost text-md text-white">
-            <FaCaretLeft></FaCaretLeft>Back
-          </Link>
-          {/* Open the modal using document.getElementById('ID').showModal() method */}
-          <button
-            className="btn btn-ghost text-white hover:text-white"
-            onClick={() => document.getElementById("my_modal_1").showModal()}
-          >
-            <FaPlus />
-            Add
-          </button>
-          <dialog id="my_modal_1" className="modal">
-            <div className="modal-box flex flex-col bg-neutral">
-              <h3 className="font-bold text-lg self-center">Add New Deck</h3>
-              <input
-                required={true}
-                value={deckName}
-                type="text"
-                placeholder="Deck Name"
-                className="input input-bordered input-primary w-full max-w-xs self-center  mx-8 my-2 mt-4"
-                onChange={handleDeckTitle}
-              />
-              <input
-                required={true}
-                value={deckDesc}
-                type="text"
-                placeholder="Deck Desc."
-                className="input input-bordered input-primary w-full max-w-xs self-center my-2"
-                onChange={handleDeckDesc}
-              />
-              <select
-                className="select select-primary w-full max-w-xs self-center my-2"
-                onChange={handleDeckCategory}
-                value={deckCategory}
+      <div className="drawer z-50">
+        <input id="my-drawer-3" type="checkbox" className="drawer-toggle" />
+        <div className="drawer-content flex flex-col">
+          {/* Navbar */}
+          <div className="w-full navbar glass bg-content">
+            <div className="flex-none lg:hidden">
+              <label
+                htmlFor="my-drawer-3"
+                aria-label="open sidebar"
+                className="btn btn-square btn-ghost"
               >
-                <option>Math</option>
-                <option>Comp Sci</option>
-                <option>Engineering</option>
-                <option>Science</option>
-                <option>Biology</option>
-                <option>Physics</option>
-                <option>Chemistry</option>
-                <option>Geography</option>
-                <option>Econ</option>
-                <option>Physical education</option>
-                <option>Drama</option>
-                <option>Music</option>
-                <option>Psychology</option>
-                <option>Language Arts</option>
-                <option>History</option>
-                <option>Art</option>
-              </select>
-              <label htmlFor="privateCheck" className="self-center">
-                Private:
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  className="inline-block w-6 h-6 stroke-current"
+                  color="white"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M4 6h16M4 12h16M4 18h16"
+                  ></path>
+                </svg>
               </label>
-              <input
-                id="privateCheck"
-                type="checkbox"
-                className="toggle toggle-warning self-center"
-                checked={priv}
-                onChange={() => {
-                  setPriv(!priv);
-                }}
-              />
-              <div className="modal-action flex">
-                <form method="dialog" className="flex justify-center w-full">
-                  {/* if there is a button in form, it will close the modal */}
-                  <button
-                    className="btn mr-8 hover:btn-error text-error font-semibold hover:text-white border border-error hover:border-transparent rounded-lg"
-                    onClick={handleDeckClose}
+            </div>
+            <div className="flex-1">
+              <Link to="/" className="btn btn-ghost text-lg text-white">
+                Quizify
+              </Link>
+
+              <dialog id="my_modal_1" className="modal">
+                <div className="modal-box flex flex-col bg-neutral">
+                  <h3 className="font-bold text-lg self-center">
+                    Add New Deck
+                  </h3>
+                  <input
+                    required={true}
+                    value={deckName}
+                    type="text"
+                    placeholder="Deck Name"
+                    className="input input-bordered input-primary w-full max-w-xs self-center  mx-8 my-2 mt-4"
+                    onChange={handleDeckTitle}
+                  />
+                  <input
+                    required={true}
+                    value={deckDesc}
+                    type="text"
+                    placeholder="Deck Desc."
+                    className="input input-bordered input-primary w-full max-w-xs self-center my-2"
+                    onChange={handleDeckDesc}
+                  />
+                  <select
+                    className="select select-primary w-full max-w-xs self-center my-2"
+                    onChange={handleDeckCategory}
+                    value={deckCategory}
                   >
-                    Close
-                  </button>
+                    <option>Math</option>
+                    <option>Comp Sci</option>
+                    <option>Engineering</option>
+                    <option>Science</option>
+                    <option>Biology</option>
+                    <option>Physics</option>
+                    <option>Chemistry</option>
+                    <option>Geography</option>
+                    <option>Econ</option>
+                    <option>Physical education</option>
+                    <option>Drama</option>
+                    <option>Music</option>
+                    <option>Psychology</option>
+                    <option>Language Arts</option>
+                    <option>History</option>
+                    <option>Art</option>
+                  </select>
+                  <label htmlFor="privateCheck" className="self-center">
+                    Private:
+                  </label>
+                  <input
+                    id="privateCheck"
+                    type="checkbox"
+                    className="toggle toggle-warning self-center"
+                    checked={priv}
+                    onChange={() => {
+                      setPriv(!priv);
+                    }}
+                  />
+                  <div className="modal-action flex">
+                    <form
+                      method="dialog"
+                      className="flex justify-center w-full"
+                    >
+                      {/* if there is a button in form, it will close the modal */}
+                      <button
+                        className="btn mr-8 hover:btn-error text-error font-semibold hover:text-white border border-error hover:border-transparent rounded-lg"
+                        onClick={handleDeckClose}
+                      >
+                        Close
+                      </button>
+                      <button
+                        className="btn ml-8 hover:btn-primary text-primary font-semibold hover:text-white border border-primary hover:border-transparent rounded-lg "
+                        onClick={handleDeckAccept}
+                      >
+                        Add
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              </dialog>
+            </div>
+
+            <div className="flex-none hidden lg:block">
+              <ul className="menu menu-horizontal flex-2 self-center justify-center">
+                {/* Navbar menu content here */}
+                <li>
+                  <Link to="/" className="btn btn-ghost text-base text-white">
+                    <FaCaretLeft></FaCaretLeft>Back
+                  </Link>
+                </li>
+                <li>
                   <button
-                    className="btn ml-8 hover:btn-primary text-primary font-semibold hover:text-white border border-primary hover:border-transparent rounded-lg "
-                    onClick={handleDeckAccept}
+                    className="btn btn-ghost text-white text-base hover:text-white"
+                    onClick={() =>
+                      document.getElementById("my_modal_1").showModal()
+                    }
                   >
+                    <FaPlus />
                     Add
                   </button>
-                </form>
-              </div>
+                </li>
+                <li>
+                  <Link
+                    to="/stats"
+                    className="btn btn-ghost text-base text-white"
+                  >
+                    Stats
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/community"
+                    className="btn btn-ghost text-base text-white"
+                  >
+                    Community
+                  </Link>
+                </li>
+                <li>
+                  <UserButton afterSignOutUrl="/" />
+                </li>
+              </ul>
             </div>
-          </dialog>
+          </div>
+          {/* Page content here */}
         </div>
-        <Link to="/community" className="btn btn-ghost text-base text-white">
-          Community
-        </Link>
-        <Link to="/stats" className="btn btn-ghost text-base text-white">
-          Stats
-        </Link>
-        <div className="flex-2 mr-2">
-          <UserButton />
+        <div className="drawer-side">
+          <label
+            htmlFor="my-drawer-3"
+            aria-label="close sidebar"
+            className="drawer-overlay"
+          ></label>
+          <ul className="menu p-4 w-80 min-h-full glass z-50 bg-neutral flex flex-col text-base">
+            {/* Sidebar content here */}
+            <li>
+              <Link
+                to="/flashcards"
+                className="btn btn-ghost text-base text-white"
+              >
+                <FaCaretLeft></FaCaretLeft>Back
+              </Link>
+            </li>
+            <li>
+              <button
+                className="btn btn-ghost text-white text-base"
+                onClick={() =>
+                  document.getElementById("my_modal_1").showModal()
+                }
+              >
+                <FaPlus />
+                Add
+              </button>
+            </li>
+            <li>
+              <Link
+                to="/community"
+                className="btn btn-ghost text-base text-white"
+              >
+                Community
+              </Link>
+            </li>
+            <li>
+              <Link to="/stats" className="btn btn-ghost text-base text-white">
+                stats
+              </Link>
+            </li>
+            <li className="self-center">
+              <UserButton afterSignOutUrl="/" />
+            </li>
+          </ul>
         </div>
       </div>
     );
@@ -265,89 +366,208 @@ const Navbars = ({
 
   if (page == "flashcards") {
     return (
-      <div className="navbar glass top-0 fixed z-50 bg-neutral">
-        <div className="flex-1">
-          <Link to="/" className="btn btn-ghost text-lg text-white">
-            Quizify
-          </Link>
-          <button
-            onClick={() => navigate(-1)}
-            className="btn btn-ghost text-md text-white"
-          >
-            <FaCaretLeft></FaCaretLeft>Back
-          </button>
-          {/* Open the modal using document.getElementById('ID').showModal() method */}
-          <button
-            className="btn btn-ghost text-white hover:text-white"
-            onClick={() => document.getElementById("my_modal_1").showModal()}
-          >
-            <FaPlus />
-            Add
-          </button>
-          <div className="dropdown text-white">
-            <label tabIndex={0} className="btn btn-ghost">
-              Practice
-            </label>
-            <ul
-              tabIndex={0}
-              className="dropdown-content z-[1] menu p-2 shadow glass rounded-box w-52 bg-neutral"
-            >
-              <li>
-                <Link to="flashcard-practice">Flashcards</Link>
-              </li>
-              <li>
-                <Link to="test">Test</Link>
-              </li>
-            </ul>
-          </div>
-          <dialog id="my_modal_1" className="modal">
-            <div className="modal-box flex flex-col bg-neutral">
-              <h3 className="font-bold text-lg self-center">
-                Add New Flashcard
-              </h3>
-              <input
-                required={true}
-                value={flashcardTerm}
-                type="text"
-                placeholder="Flashcard Term"
-                className="input input-bordered input-primary w-full max-w-xs self-center  mx-8 my-4"
-                onChange={handleCardTerm}
-              />
-              <textarea
-                required={true}
-                value={flashcardDef}
-                placeholder="Flashcard Definition"
-                className="textarea textarea-primary w-full max-w-xs self-center my-2"
-                onChange={handleCardDef}
-              />
-              <div className="modal-action flex">
-                <form method="dialog" className="flex justify-center w-full">
-                  {/* if there is a button in form, it will close the modal */}
-                  <button
-                    className="btn mr-8 hover:btn-error text-error font-semibold hover:text-white border border-error hover:border-transparent rounded-lg"
-                    onClick={handleClose}
+      <div className="drawer z-50">
+        <input id="my-drawer-3" type="checkbox" className="drawer-toggle" />
+        <div className="drawer-content flex flex-col">
+          {/* Navbar */}
+          <div className="w-full navbar glass bg-content">
+            <div className="flex-none lg:hidden">
+              <label
+                htmlFor="my-drawer-3"
+                aria-label="open sidebar"
+                className="btn btn-square btn-ghost"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  className="inline-block w-6 h-6 stroke-current"
+                  color="white"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M4 6h16M4 12h16M4 18h16"
+                  ></path>
+                </svg>
+              </label>
+            </div>
+            <div className="flex-1">
+              <Link to="/" className="btn btn-ghost text-lg text-white">
+                Quizify
+              </Link>
+
+              <dialog id="my_modal_1" className="modal">
+                <div className="modal-box flex flex-col bg-neutral">
+                  <h3 className="font-bold text-lg self-center">
+                    Add New Flashcard
+                  </h3>
+                  <input
+                    required={true}
+                    value={flashcardTerm}
+                    type="text"
+                    placeholder="Flashcard Term"
+                    className="input input-bordered input-primary w-full max-w-xs self-center  mx-8 my-4"
+                    onChange={handleCardTerm}
+                  />
+                  <textarea
+                    required={true}
+                    value={flashcardDef}
+                    placeholder="Flashcard Definition"
+                    className="textarea textarea-primary w-full max-w-xs self-center my-2"
+                    onChange={handleCardDef}
+                  />
+                  <div className="modal-action flex">
+                    <form
+                      method="dialog"
+                      className="flex justify-center w-full"
+                    >
+                      {/* if there is a button in form, it will close the modal */}
+                      <button
+                        className="btn mr-8 hover:btn-error text-error font-semibold hover:text-white border border-error hover:border-transparent rounded-lg"
+                        onClick={handleClose}
+                      >
+                        Close
+                      </button>
+                      <button
+                        className="btn ml-8 hover:btn-primary text-primary font-semibold hover:text-white border border-primary hover:border-transparent rounded-lg "
+                        onClick={handleCardAccept}
+                      >
+                        Add
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              </dialog>
+            </div>
+            <div className="flex-none hidden lg:block">
+              <ul className="menu menu-horizontal flex-2 items-center justify-center">
+                {/* Navbar menu content here */}
+                <li>
+                  <Link
+                    to="/flashcards"
+                    className="btn btn-ghost text-base text-white"
                   >
-                    Close
-                  </button>
+                    <FaCaretLeft></FaCaretLeft>Back
+                  </Link>
+                </li>
+                <li>
                   <button
-                    className="btn ml-8 hover:btn-primary text-primary font-semibold hover:text-white border border-primary hover:border-transparent rounded-lg "
-                    onClick={handleCardAccept}
+                    className="btn btn-ghost text-white hover:text-white text-base"
+                    onClick={() =>
+                      document.getElementById("my_modal_1").showModal()
+                    }
                   >
+                    <FaPlus />
                     Add
                   </button>
-                </form>
-              </div>
+                </li>
+
+                <div className="dropdown text-white ">
+                  <label tabIndex={0} className="btn btn-ghost text-base ">
+                    Practice
+                  </label>
+                  <ul
+                    tabIndex={0}
+                    className="dropdown-content z-[1] menu p-2 shadow glass rounded-box w-52 bg-neutral text-base"
+                  >
+                    <li>
+                      <Link to="flashcard-practice">Flashcards</Link>
+                    </li>
+                    <li>
+                      <Link to="test">Test</Link>
+                    </li>
+                  </ul>
+                </div>
+
+                <li>
+                  <Link
+                    to="/flashcards"
+                    className="btn btn-ghost text-base text-white"
+                  >
+                    Decks
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/community"
+                    className="btn btn-ghost text-base text-white"
+                  >
+                    Community
+                  </Link>
+                </li>
+                <li>
+                  <UserButton afterSignOutUrl="/" />
+                </li>
+              </ul>
             </div>
-          </dialog>
+          </div>
+          {/* Page content here */}
         </div>
-        <Link to="/community" className="btn btn-ghost text-base text-white">
-          Community
-        </Link>
-        <Link to="/stats" className="btn btn-ghost text-base text-white">
-          Stats
-        </Link>
-        <div className="flex-2 mr-2">
-          <UserButton />
+        <div className="drawer-side">
+          <label
+            htmlFor="my-drawer-3"
+            aria-label="close sidebar"
+            className="drawer-overlay"
+          ></label>
+          <ul className="menu p-4 w-80 min-h-full glass z-50 bg-neutral flex flex-col text-base">
+            {/* Sidebar content here */}
+            <li>
+              <Link
+                to="/flashcards"
+                className="btn btn-ghost text-base text-white"
+              >
+                <FaCaretLeft></FaCaretLeft>Back
+              </Link>
+            </li>
+            <li>
+              <button
+                className="btn btn-ghost text-white text-base hover:text-white"
+                onClick={() =>
+                  document.getElementById("my_modal_1").showModal()
+                }
+              >
+                <FaPlus />
+                Add
+              </button>
+            </li>
+            <li>
+              <div className="dropdown text-white justify-center">
+                <label tabIndex={0} className="btn btn-ghost">
+                  Practice
+                </label>
+                <ul
+                  tabIndex={0}
+                  className="dropdown-content z-[1] menu p-2 shadow glass rounded-box w-52 bg-neutral"
+                >
+                  <li>
+                    <Link to="flashcard-practice">Flashcards</Link>
+                  </li>
+                  <li>
+                    <Link to="test">Test</Link>
+                  </li>
+                </ul>
+              </div>
+            </li>
+            <li>
+              <Link to="/stats" className="btn btn-ghost text-base text-white">
+                stats
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/community"
+                className="btn btn-ghost text-base text-white"
+              >
+                Community
+              </Link>
+            </li>
+
+            <li className="self-center">
+              <UserButton afterSignOutUrl="/" />
+            </li>
+          </ul>
         </div>
       </div>
     );
@@ -355,23 +575,90 @@ const Navbars = ({
 
   if (page == "flashcard-practice" || page == "test") {
     return (
-      <div className="navbar glass top-0 fixed z-50 bg-neutral">
-        <div className="flex-1">
-          <Link to="/" className="btn btn-ghost text-lg text-white">
-            Quizify
-          </Link>
-          <button
-            onClick={() => navigate(-1)}
-            className="btn btn-ghost text-md text-white"
-          >
-            <FaCaretLeft></FaCaretLeft>Back
-          </button>
+      <div className="drawer z-50">
+        <input id="my-drawer-3" type="checkbox" className="drawer-toggle" />
+        <div className="drawer-content flex flex-col">
+          {/* Navbar */}
+          <div className="w-full navbar glass bg-content">
+            <div className="flex-none lg:hidden">
+              <label
+                htmlFor="my-drawer-3"
+                aria-label="open sidebar"
+                className="btn btn-square btn-ghost"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  className="inline-block w-6 h-6 stroke-current"
+                  color="white"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M4 6h16M4 12h16M4 18h16"
+                  ></path>
+                </svg>
+              </label>
+            </div>
+            <div className="flex-1">
+              <Link to="/" className="btn btn-ghost text-lg text-white">
+                Quizify
+              </Link>
+            </div>
+            <div className="flex-none hidden lg:block">
+              <ul className="menu menu-horizontal flex-2 self-center justify-center">
+                {/* Navbar menu content here */}
+                <li>
+                  <button
+                    onClick={() => navigate(-1)}
+                    className="btn btn-ghost text-base text-white"
+                  >
+                    <FaCaretLeft></FaCaretLeft>Back
+                  </button>
+                </li>
+                <li>
+                  <Link
+                    to="/stats"
+                    className="btn btn-ghost text-base text-white"
+                  >
+                    Stats
+                  </Link>
+                </li>
+                <li>
+                  <UserButton afterSignOutUrl="/" />
+                </li>
+              </ul>
+            </div>
+          </div>
+          {/* Page content here */}
         </div>
-        <Link to="/stats" className="btn btn-ghost text-base text-white">
-          Stats
-        </Link>
-        <div className="flex-none mr-2">
-          <UserButton />
+        <div className="drawer-side">
+          <label
+            htmlFor="my-drawer-3"
+            aria-label="close sidebar"
+            className="drawer-overlay"
+          ></label>
+          <ul className="menu p-4 w-80 min-h-full glass z-50 bg-neutral flex flex-col">
+            {/* Sidebar content here */}
+            <li>
+              <button
+                onClick={() => navigate(-1)}
+                className="btn btn-ghost text-base text-white"
+              >
+                <FaCaretLeft></FaCaretLeft>Back
+              </button>
+            </li>
+            <li>
+              <Link to="/stats" className="btn btn-ghost text-base text-white">
+                Stats
+              </Link>
+            </li>
+            <li className="self-center">
+              <UserButton afterSignOutUrl="/" />
+            </li>
+          </ul>
         </div>
       </div>
     );
@@ -379,23 +666,103 @@ const Navbars = ({
 
   if (page == "profile") {
     return (
-      <div className="navbar glass top-0 fixed z-50 bg-neutral">
-        <div className="flex-1">
-          <Link to="/" className="btn btn-ghost text-lg text-white">
-            Quizify
-          </Link>
-          <Link to="/" className="btn btn-ghost text-md text-white">
-            <FaCaretLeft></FaCaretLeft>Back
-          </Link>
+      <div className="drawer z-50">
+        <input id="my-drawer-3" type="checkbox" className="drawer-toggle" />
+        <div className="drawer-content flex flex-col">
+          {/* Navbar */}
+          <div className="w-full navbar glass bg-content">
+            <div className="flex-none lg:hidden">
+              <label
+                htmlFor="my-drawer-3"
+                aria-label="open sidebar"
+                className="btn btn-square btn-ghost"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  className="inline-block w-6 h-6 stroke-current"
+                  color="white"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M4 6h16M4 12h16M4 18h16"
+                  ></path>
+                </svg>
+              </label>
+            </div>
+            <div className="flex-1">
+              <Link to="/" className="btn btn-ghost text-lg text-white">
+                Quizify
+              </Link>
+            </div>
+            <div className="flex-none hidden lg:block">
+              <ul className="menu menu-horizontal flex-2 self-center justify-center">
+                {/* Navbar menu content here */}
+                <li>
+                  <Link to="/" className="btn btn-ghost text-base text-white">
+                    <FaCaretLeft />
+                    Back
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/flashcards"
+                    className="btn btn-ghost text-base text-white"
+                  >
+                    Decks
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/community"
+                    className="btn btn-ghost text-base text-white"
+                  >
+                    Community
+                  </Link>
+                </li>
+                <li>
+                  <UserButton afterSignOutUrl="/" />
+                </li>
+              </ul>
+            </div>
+          </div>
         </div>
-        <Link to="/flashcards" className="btn btn-ghost text-base text-white">
-          Decks
-        </Link>
-        <Link to="/community" className="btn btn-ghost text-base text-white">
-          Community
-        </Link>
-        <div className="flex-none mr-2">
-          <UserButton />
+        <div className="drawer-side">
+          <label
+            htmlFor="my-drawer-3"
+            aria-label="close sidebar"
+            className="drawer-overlay"
+          ></label>
+          <ul className="menu p-4 w-80 min-h-full glass z-50 bg-neutral flex flex-col">
+            {/* Sidebar content here */}
+            <li>
+              <Link to="/" className="btn btn-ghost text-base text-white">
+                <FaCaretLeft></FaCaretLeft>Back
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/flashcards"
+                className="btn btn-ghost text-base text-white"
+              >
+                Decks
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/community"
+                className="btn btn-ghost text-base text-white"
+              >
+                Community
+              </Link>
+            </li>
+            <li className="self-center">
+              <UserButton afterSignOutUrl="/" />
+            </li>
+          </ul>
         </div>
       </div>
     );
@@ -403,23 +770,101 @@ const Navbars = ({
 
   if (page == "community") {
     return (
-      <div className="navbar glass top-0 fixed z-50 bg-neutral">
-        <div className="flex-1">
-          <Link to="/" className="btn btn-ghost text-lg text-white">
-            Quizify
-          </Link>
-          <Link to="/" className="btn btn-ghost text-md text-white">
-            <FaCaretLeft></FaCaretLeft>Back
-          </Link>
+      <div className="drawer z-50">
+        <input id="my-drawer-3" type="checkbox" className="drawer-toggle" />
+        <div className="drawer-content flex flex-col">
+          {/* Navbar */}
+          <div className="w-full navbar glass bg-content">
+            <div className="flex-none lg:hidden">
+              <label
+                htmlFor="my-drawer-3"
+                aria-label="open sidebar"
+                className="btn btn-square btn-ghost"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  className="inline-block w-6 h-6 stroke-current"
+                  color="white"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M4 6h16M4 12h16M4 18h16"
+                  ></path>
+                </svg>
+              </label>
+            </div>
+            <div className="flex-1">
+              <Link to="/" className="btn btn-ghost text-lg text-white">
+                Quizify
+              </Link>
+            </div>
+            <div className="flex-none hidden lg:block">
+              <ul className="menu menu-horizontal flex-2">
+                {/* Navbar menu content here */}
+                <li>
+                  <Link to="/" className="btn btn-ghost text-base text-white">
+                    <FaCaretLeft />
+                    Back
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/flashcards"
+                    className="btn btn-ghost text-base text-white"
+                  >
+                    Decks
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/stats"
+                    className="btn btn-ghost text-base text-white"
+                  >
+                    Stats
+                  </Link>
+                </li>
+                <li>
+                  <UserButton afterSignOutUrl="/" />
+                </li>
+              </ul>
+            </div>
+          </div>
+          {/* Page content here */}
         </div>
-        <Link to="/flashcards" className="btn btn-ghost text-base text-white">
-          Decks
-        </Link>
-        <Link to="/stats" className="btn btn-ghost text-base text-white">
-          Stats
-        </Link>
-        <div className="flex-none mr-2">
-          <UserButton />
+        <div className="drawer-side">
+          <label
+            htmlFor="my-drawer-3"
+            aria-label="close sidebar"
+            className="drawer-overlay"
+          ></label>
+          <ul className="menu p-4 w-80 min-h-full glass z-50 bg-neutral flex flex-col">
+            {/* Sidebar content here */}
+            <li>
+              <Link to="/" className="btn btn-ghost text-base text-white">
+                <FaCaretLeft></FaCaretLeft>Back
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/flashcards"
+                className="btn btn-ghost text-base text-white"
+              >
+                Decks
+              </Link>
+            </li>
+            <li>
+              <Link to="/stats" className="btn btn-ghost text-base text-white">
+                Stats
+              </Link>
+            </li>
+            <li className="self-center">
+              <UserButton afterSignOutUrl="/" />
+            </li>
+          </ul>
         </div>
       </div>
     );

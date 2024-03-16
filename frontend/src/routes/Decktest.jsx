@@ -100,7 +100,7 @@ const Decktest = () => {
     return (
       <div className="bg-neutral">
         <Navbars page="test"></Navbars>
-        <div className="mt-24 bg-neutral"></div>
+        <div className="bg-neutral"></div>
         <Loading />
         <Footer></Footer>
       </div>
@@ -109,7 +109,7 @@ const Decktest = () => {
     return (
       <div className="bg-neutral">
         <Navbars page="test"></Navbars>
-        <div className="mt-24 bg-neutral"></div>
+        <div className="bg-neutral"></div>
         {!modalClosed && <Loading />}
         <dialog id="my_modal_test" className="modal">
           <div className="modal-box">
