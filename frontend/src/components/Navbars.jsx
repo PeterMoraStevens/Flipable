@@ -16,7 +16,7 @@ const Navbars = ({
   const { deckNum } = useParams();
   const navigate = useNavigate();
   const user = useUser().user;
-  const userId = useUser().user?.id.toString();
+  const userId = user?.id.toString();
   const [deckName, setDeckName] = useState("");
   const [deckDesc, setDeckDesc] = useState("");
   const [priv, setPriv] = useState(true);
@@ -25,15 +25,23 @@ const Navbars = ({
   const [flashcardDef, setFlashcardDef] = useState("");
   const [streak, setStreak] = useState(0);
 
-  // useEffect(() => {
-  //   axios
-  //     .get("/getUser", {
-  //       params: {
-  //         userId: userId,
-  //       },
-  //     })
-  //     .then((res) => setStreak(res.currentStreak));
-  // }, []);
+  useEffect(() => {
+    if (userId) {
+      axios
+        .get("/getUser", {
+          params: {
+            userId: userId,
+          },
+        })
+        .then((res) => setStreak(res.data.currentStreak))
+        .catch((error) => console.error("Error fetching user:", error));
+
+      axios.post("/updateUsername", {
+        userName: user.username.toString(),
+        userId: userId,
+      });
+    }
+  }, [userId]); // Only re-run the effect if userId changes
 
   if (page === "landing") {
     return (
@@ -212,7 +220,6 @@ const Navbars = ({
       userId: user?.id.toString(),
       private: priv,
     };
-    console.log(flashDecks, newDeck);
     setFlashcardDecks([...flashDecks, newDeck]);
     axios.post(`/addDeck`, newDeck).catch((err) => console.log(err));
     axios.post(`/incrementDeck`, idIncrement).catch((err) => console.log(err));
@@ -357,18 +364,18 @@ const Navbars = ({
                 </li>
                 <li>
                   <Link
-                    to="/stats"
-                    className="btn btn-ghost text-base text-white"
-                  >
-                    Stats
-                  </Link>
-                </li>
-                <li>
-                  <Link
                     to="/community"
                     className="btn btn-ghost text-base text-white"
                   >
                     Community
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/stats"
+                    className="btn btn-ghost text-base text-white"
+                  >
+                    Stats
                   </Link>
                 </li>
                 <div className="self-center justify-center">

@@ -1,76 +1,106 @@
-import { useState, useEffect, useContext } from "react";
-import { FlashcardContext } from "../App";
-// import { useUser } from "@clerk/clerk-react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Navbars from "../components/Navbars";
 import Footer from "../components/Footer";
 import CommunityDeck from "../components/CommunityDeck";
 
 const Community = () => {
-  const { communityDecks, setCommunityDecks } = useContext(FlashcardContext);
+  const [communityDecksDB, setCommunityDecksDB] = useState([]);
   const [loading, setLoading] = useState(true);
-  // const user = useUser().user;
-  // const user_id = user?.id.toString();
-  // const user_name = user.username;
-  let ran = false;
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
   useEffect(() => {
-    setLoading(true);
-    axios
-      .get("/getCommunityDecks")
-      .then((res) => {
-        setCommunityDecks(res.data);
+    const fetchCommunityDecks = async () => {
+      try {
+        const response = await axios.get("/getCommunityDecks", {
+          params: {
+            page: currentPage,
+            limit: 12, // Adjust limit as needed
+          },
+        });
+        setCommunityDecksDB(response.data.decks);
+        setTotalPages(response.data.totalPages);
+      } catch (error) {
+        console.error("Error fetching community decks:", error);
+      } finally {
         setLoading(false);
-      })
-      .catch((err) => {
-        console.log(err);
-        setLoading(false);
-      });
-  }, []);
+      }
+    };
+
+    fetchCommunityDecks();
+  }, [currentPage]);
+
+  const toTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const handleNextPage = () => {
+    setCurrentPage(currentPage + 1);
+    setTimeout(() => {
+      toTop();
+    }, 0);
+  };
+
+  const handlePrevPage = () => {
+    setCurrentPage(currentPage - 1);
+    setTimeout(() => {
+      toTop();
+    }, 0);
+  };
 
   if (loading) {
     return (
       <div className="bg-neutral">
-        <Navbars page="community"></Navbars>
+        <Navbars page="community" />
         <div className="min-h-screen flex justify-center">
           <span className="loading loading-infinity loading-lg self-center"></span>
         </div>
-        <Footer></Footer>
-      </div>
-    );
-  }
-
-  if (communityDecks.length == 0) {
-    return (
-      <div className="bg-neutral">
-        <Navbars page="community"></Navbars>
-        <div className="min-h-screen flex justify-center">
-          Bruh, no one uses this site
-        </div>
-        <Footer></Footer>
+        <Footer />
       </div>
     );
   }
 
   return (
     <>
-      <Navbars page="community"></Navbars>
+      <Navbars page="community" />
       <div className="bg-neutral"></div>
-      <div className=" min-h-screen">
+      <div className="min-h-screen">
         <ul className="grid lg:grid-cols-3 sm:grid-cols-2 gap-4 m-4">
-          {communityDecks.map((deck, i) => (
+          {communityDecksDB.map((deck, i) => (
             <CommunityDeck
               key={i}
               i={i}
               title={deck.title}
               desc={deck.description}
               category={deck.category}
-              communityDecks={communityDecks}
+              communityDecks={communityDecksDB}
             />
           ))}
         </ul>
+        <div className="flex justify-center my-4">
+          <div className="join">
+            <button
+              className="join-item btn"
+              onClick={handlePrevPage}
+              disabled={currentPage === 1}
+            >
+              «
+            </button>
+            <div className="join-item btn">
+              {currentPage} of {totalPages}
+            </div>
+            <button
+              className="join-item btn"
+              onClick={handleNextPage}
+              disabled={currentPage === totalPages}
+            >
+              »
+            </button>
+          </div>
+        </div>
       </div>
-      <Footer></Footer>
+      <Footer />
     </>
   );
 };

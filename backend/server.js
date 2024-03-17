@@ -1,8 +1,5 @@
-
+const moment = require("moment-timezone");
 const grading = require("./AI/grading.js");
-const dotenv = require("dotenv").config();
-const OpenAI = require("openai");
-const openai = new OpenAI(process.env.OPENAI_API_KEY);
 const express = require("express");
 const cors = require("cors");
 const app = express();
@@ -38,6 +35,7 @@ mongoose
 const Schema = mongoose.Schema;
 const userSchema = new Schema({
   userId: String,
+  userName: String,
   testsTaken: {
     type: Number,
     default: 0,
@@ -50,7 +48,7 @@ const userSchema = new Schema({
     type: Number,
     default: 0,
   },
-  practicedToday: {
+  hasPracticed: {
     type: Boolean,
     default: false,
   },
@@ -112,6 +110,41 @@ app.get("/getDecks", async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(400).send(error);
+  }
+});
+
+app.post("/incrementStreak", async (req, res) => {
+  try {
+    const user = await User.findOne({ userId: req.body.userId });
+
+    if (!user) {
+      return res.status(404).send("User not found");
+    }
+
+    // Check if the user has already practiced today
+    if (!user.hasPracticed) {
+      // If the user hasn't practiced today, update streak and set practicedToday to true
+      user.hasPracticed = true;
+      user.currentStreak += 1;
+
+      // Update longest streak if necessary
+      if (user.currentStreak > user.longestStreak) {
+        user.longestStreak = user.currentStreak;
+      }
+
+      // Save the user object
+      await user.save();
+
+      // Send success response
+      return res.status(200).send("Streak incremented successfully");
+    } else {
+      // If the user has already practiced today, send a message indicating it
+      return res.status(400).send("Streak already incremented today");
+    }
+  } catch (err) {
+    // Handle errors
+    console.error(err);
+    return res.status(500).send("Internal Server Error");
   }
 });
 
@@ -239,6 +272,20 @@ app.post("/incrementTests", async (req, res) => {
   }
 });
 
+app.post("/updateUsername", async (req, res) => {
+  try {
+    await User.findOneAndUpdate(
+      { userId: req.body.userId },
+      { $set: { userName: req.body.userName } },
+      { new: true, upsert: true }
+    );
+    res.status(200).send("updated username");
+  } catch (error) {
+    console.error(error);
+    res.status(400).send(error);
+  }
+});
+
 app.get("/getUser", async (req, res) => {
   try {
     const currentUser = await User.findOne({ userId: req.query.userId });
@@ -248,12 +295,13 @@ app.get("/getUser", async (req, res) => {
       cardsCreated: currentUser.cardsCreated,
       currentStreak: currentUser.currentStreak,
       longestStreak: currentUser.longestStreak,
+      userName: currentUser.userName,
     };
     res.status(200).json(response);
   } catch (err) {
     User.create({
       userId: req.query.userId,
-      userName: req.require.userName,
+      userName: req.query.userName,
       testsTaken: 0,
       cardsCreated: 0,
       decksCreated: 0,
@@ -262,7 +310,26 @@ app.get("/getUser", async (req, res) => {
       hasPracticed: false,
       decks: [],
     });
-    res.status(400).send(err).json(response);
+    res.status(400).send(err);
+  }
+});
+
+// API endpoint to get the top four users with the longest streaks
+app.get("/getTopStreakUsers", async (req, res) => {
+  try {
+    // Find the top four users with the longest streaks
+    const topUsers = await User.find().sort({ longestStreak: -1 }).limit(4);
+
+    // Get the current user
+    const currentUser = await User.findOne({ userId: req.query.userId });
+
+    // If the current user is not among the top four, add them to the list
+    topUsers.push(currentUser);
+
+    res.status(200).json(topUsers);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Internal Server Error");
   }
 });
 
@@ -310,22 +377,43 @@ app.delete("/deleteCard", async (req, res) => {
 // API endpoint to find all public decks and return them
 app.get("/getCommunityDecks", async (req, res) => {
   try {
-    let allDecks = [];
-    const users = await User.find({});
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 12; // Default limit of 10 items per page
+    const skip = (page - 1) * limit;
 
-    // console.log(users)
-    //for every person, for every deck, add public decks to the alldecks array
-    for (let i = 0; i < users.length; i++) {
-      for (let j = 0; j < users[i].decks.length; j++) {
-        if (users[i].decks[j].private == false) {
-          allDecks.push(users[i].decks[j]);
-        }
-      }
-    }
-    res.json(allDecks).status(200);
+    // Aggregate to get only the decks from all users
+    const decksAggregate = await User.aggregate([
+      { $unwind: "$decks" },
+      { $match: { "decks.private": false } },
+      { $project: { _id: 0, decks: 1 } }, // Project only the decks array
+      { $skip: skip },
+      { $limit: limit },
+    ]);
+
+    // Extract the decks from the aggregation result
+    const decks = decksAggregate.map((user) => user.decks);
+
+    // Count total public decks
+    const totalDecksAggregate = await User.aggregate([
+      { $unwind: "$decks" },
+      { $match: { "decks.private": false } },
+      { $count: "total" },
+    ]);
+
+    const totalDecks =
+      totalDecksAggregate.length > 0 ? totalDecksAggregate[0].total : 0;
+    const totalPages = Math.ceil(totalDecks / limit);
+
+    res
+      .json({
+        decks,
+        totalPages,
+        currentPage: page,
+      })
+      .status(200);
   } catch (error) {
     console.error(error);
-    res.status(400).send(error);
+    res.status(500).send("Internal Server Error");
   }
 });
 
@@ -343,69 +431,38 @@ app.post("/updatePrivate", async (req, res) => {
   }
 });
 
-// API endpoint to get the top 5 users based on streak lengths
-// app.get("/getTopUsers", async (req, res) => {
-//   try {
-//     // Get all users sorted by streak length in descending order
-//     const topUsers = await User.find().sort({ longestStreak: -1 }).limit(5);
+const updateStreaks = async () => {
+  try {
+    const users = await User.find();
 
-//     // Get the current user's Clerk ID from the request
-//     const clerkUserId = req.query.userId; // Assuming userId is the Clerk user ID
+    users.forEach(async (user) => {
+      // Check if the user has studied today
+      if (!user.hasPracticed) {
+        // Reset current streak to 0
+        user.currentStreak = 0;
+      }
 
-//     // Get the current user's information using Clerk's getUser hook
-//     const currentUser = await getUser(clerkUserId);
+      // Reset practicedToday flag for the next day
+      user.practicedToday = false;
 
-//     // Find the position of the current user among the top users
-//     let userPosition = -1;
-//     for (let i = 0; i < topUsers.length; i++) {
-//       if (topUsers[i].userId === clerkUserId) {
-//         userPosition = i;
-//         break;
-//       }
-//     }
+      // Save the updated user object
+      await user.save();
+    });
 
-//     // Prepare the response
-//     const response = [];
+    console.log("Streaks updated successfully.");
+  } catch (error) {
+    console.error("Error updating streaks:", error);
+  }
+};
 
-//     // If the current user is not among the top 5, add them to the response
-//     if (userPosition === -1) {
-//       const currentUserData = {
-//         place: "Your Place",
-//         name: currentUser.username, // Fetch username from the user object
-//         streakLength: currentUser.longestStreak,
-//       };
-//       response.push(currentUserData);
-//     }
+// Schedule the function to run daily at 11:59pm PST
+cron.schedule("59 23 * * *", () => {
+  // Convert current time to PST timezone
+  const currentTimePST = moment().tz("America/Los_Angeles").format();
 
-//     // Add the top 5 users to the response
-//     for (let i = 0; i < topUsers.length; i++) {
-//       const userData = {
-//         place: i + 1,
-//         name: topUsers[i].userName, // Assuming userName is stored in the database
-//         streakLength: topUsers[i].longestStreak,
-//       };
-//       response.push(userData);
-//     }
-
-//     // Send the response
-//     res.status(200).json(response);
-//   } catch (error) {
-//     console.error(error);
-//     res.status(400).send(error);
-//   }
-// });
-
-// // Schedule the function to run every day at 11:59 PM PST
-// cron.schedule(
-//   "59 23 * * *",
-//   () => {
-//     console.log("Running streak update task...");
-//     updateStreaks();
-//   },
-//   {
-//     timezone: "America/Los_Angeles", // Set timezone to PST
-//   }
-// );
+  console.log(`Running updateStreaks function at ${currentTimePST}`);
+  updateStreaks();
+});
 
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "dist", "index.html"));

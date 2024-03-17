@@ -62,6 +62,18 @@ export default defineConfig({
         target: "http://localhost:3001",
         changeOrigin: true,
       },
+      "/incrementStreak": {
+        target: "http://localhost:3001",
+        changeOrigin: true,
+      },
+      "/getTopStreakUsers": {
+        target: "http://localhost:3001",
+        changeOrigin: true,
+      },
+      "/updateUsername": {
+        target: "http://localhost:3001",
+        changeOrigin: true,
+      },
     },
   },
   define: {

@@ -17,6 +17,7 @@ function FlashcardsPractice() {
   const [isAnimating, setIsAnimating] = useState(false);
   const [progress, setProgress] = useState(1);
   const [isCardFlipped, setIsCardFlipped] = useState(false);
+  const [hasLoaded, setHasLoaded] = useState(false);
   const user = useUser().user;
   const user_id = user?.id.toString();
   const { deckNum } = useParams();
@@ -35,6 +36,7 @@ function FlashcardsPractice() {
         })
         .then((res) => {
           setFlashCards(res.data);
+          setHasLoaded(true);
         })
         .catch((err) => {
           console.log(err);
@@ -130,6 +132,10 @@ function FlashcardsPractice() {
   }
 
   if (deck.length === 0) {
+    if (hasLoaded) {
+      axios.post("/incrementStreak", { userId: user_id });
+    }
+
     return (
       <>
         <Navbars page="flashcard-practice"></Navbars>
