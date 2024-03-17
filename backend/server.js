@@ -1,4 +1,4 @@
-// Import required modules
+
 const grading = require("./AI/grading.js");
 const dotenv = require("dotenv").config();
 const OpenAI = require("openai");
@@ -9,6 +9,7 @@ const app = express();
 const path = require("path");
 const PORT = process.env.PORT || 3001;
 const mongoose = require("mongoose");
+const cron = require("node-cron");
 
 app.use(express.json());
 app.use(express.static("dist"));
@@ -49,6 +50,18 @@ const userSchema = new Schema({
     type: Number,
     default: 0,
   },
+  practicedToday: {
+    type: Boolean,
+    default: false,
+  },
+  longestStreak: {
+    type: Number,
+    default: 0,
+  },
+  currentStreak: {
+    type: Number,
+    default: 0,
+  },
   decks: {
     type: [
       {
@@ -78,10 +91,13 @@ app.get("/getDecks", async (req, res) => {
     if (!user) {
       User.create({
         userId: req.query.userId,
+        userName: req.require.userName,
         testsTaken: 0,
         cardsCreated: 0,
         decksCreated: 0,
-        practicedToday: false,
+        currentStreak: 0,
+        longestStreak: 0,
+        hasPracticed: false,
         decks: [],
       });
       console.log("User Not Found");
@@ -237,10 +253,13 @@ app.get("/getUser", async (req, res) => {
   } catch (err) {
     User.create({
       userId: req.query.userId,
+      userName: req.require.userName,
       testsTaken: 0,
       cardsCreated: 0,
       decksCreated: 0,
-      practicedToday: false,
+      currentStreak: 0,
+      longestStreak: 0,
+      hasPracticed: false,
       decks: [],
     });
     res.status(400).send(err).json(response);
@@ -323,6 +342,70 @@ app.post("/updatePrivate", async (req, res) => {
     res.status(400).send(err);
   }
 });
+
+// API endpoint to get the top 5 users based on streak lengths
+// app.get("/getTopUsers", async (req, res) => {
+//   try {
+//     // Get all users sorted by streak length in descending order
+//     const topUsers = await User.find().sort({ longestStreak: -1 }).limit(5);
+
+//     // Get the current user's Clerk ID from the request
+//     const clerkUserId = req.query.userId; // Assuming userId is the Clerk user ID
+
+//     // Get the current user's information using Clerk's getUser hook
+//     const currentUser = await getUser(clerkUserId);
+
+//     // Find the position of the current user among the top users
+//     let userPosition = -1;
+//     for (let i = 0; i < topUsers.length; i++) {
+//       if (topUsers[i].userId === clerkUserId) {
+//         userPosition = i;
+//         break;
+//       }
+//     }
+
+//     // Prepare the response
+//     const response = [];
+
+//     // If the current user is not among the top 5, add them to the response
+//     if (userPosition === -1) {
+//       const currentUserData = {
+//         place: "Your Place",
+//         name: currentUser.username, // Fetch username from the user object
+//         streakLength: currentUser.longestStreak,
+//       };
+//       response.push(currentUserData);
+//     }
+
+//     // Add the top 5 users to the response
+//     for (let i = 0; i < topUsers.length; i++) {
+//       const userData = {
+//         place: i + 1,
+//         name: topUsers[i].userName, // Assuming userName is stored in the database
+//         streakLength: topUsers[i].longestStreak,
+//       };
+//       response.push(userData);
+//     }
+
+//     // Send the response
+//     res.status(200).json(response);
+//   } catch (error) {
+//     console.error(error);
+//     res.status(400).send(error);
+//   }
+// });
+
+// // Schedule the function to run every day at 11:59 PM PST
+// cron.schedule(
+//   "59 23 * * *",
+//   () => {
+//     console.log("Running streak update task...");
+//     updateStreaks();
+//   },
+//   {
+//     timezone: "America/Los_Angeles", // Set timezone to PST
+//   }
+// );
 
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "dist", "index.html"));

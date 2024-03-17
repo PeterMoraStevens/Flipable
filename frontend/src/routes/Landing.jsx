@@ -80,6 +80,7 @@ const Landing = () => {
             </svg>
           </Link>
         </div>
+        
         <motion.div
           initial="hidden"
           animate="visible"

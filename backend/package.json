@@ -11,11 +11,13 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@clerk/backend": "^0.38.3",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "mongodb": "^6.3.0",
     "mongoose": "^8.0.1",
+    "node-cron": "^3.0.3",
     "openai": "^4.20.1"
   },
   "devDependencies": {

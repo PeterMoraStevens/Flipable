@@ -15,22 +15,18 @@ const Community = () => {
   let ran = false;
 
   useEffect(() => {
-    if (!ran) {
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-      ran = true;
-      setLoading(true);
-      axios
-        .get("/getCommunityDecks")
-        .then((res) => {
-          setCommunityDecks(res.data);
-          setLoading(false);
-        })
-        .catch((err) => {
-          console.log(err);
-          setLoading(false);
-        });
-    }
-  }, [setCommunityDecks]);
+    setLoading(true);
+    axios
+      .get("/getCommunityDecks")
+      .then((res) => {
+        setCommunityDecks(res.data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.log(err);
+        setLoading(false);
+      });
+  }, []);
 
   if (loading) {
     return (

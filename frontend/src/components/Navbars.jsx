@@ -19,52 +19,141 @@ const Navbars = ({
   const userId = useUser().user?.id.toString();
   const [deckName, setDeckName] = useState("");
   const [deckDesc, setDeckDesc] = useState("");
-  const [priv, setPriv] = useState(false);
+  const [priv, setPriv] = useState(true);
   const [deckCategory, setDeckCategory] = useState("Math");
   const [flashcardTerm, setFlashcardTerm] = useState("");
   const [flashcardDef, setFlashcardDef] = useState("");
   const [streak, setStreak] = useState(0);
 
-  useEffect(() => {
-    axios
-      .get("/getUser", {
-        params: {
-          userId: userId,
-        },
-      })
-      .then((res) => setStreak(res.currentStreak));
-  }, []);
+  // useEffect(() => {
+  //   axios
+  //     .get("/getUser", {
+  //       params: {
+  //         userId: userId,
+  //       },
+  //     })
+  //     .then((res) => setStreak(res.currentStreak));
+  // }, []);
 
   if (page === "landing") {
     return (
       <>
         <SignedIn>
-          <div className="navbar glass top-0 fixed z-50 bg-neutral">
-            <div className="flex-1">
-              <Link to="/" className="btn btn-ghost text-lg text-white">
-                Quizify
-              </Link>
+          <div className="drawer z-50">
+            <input id="my-drawer-3" type="checkbox" className="drawer-toggle" />
+            <div className="drawer-content flex flex-col">
+              {/* Navbar */}
+              <div className="w-full navbar glass bg-content">
+                <div className="flex-none lg:hidden">
+                  <label
+                    htmlFor="my-drawer-3"
+                    aria-label="open sidebar"
+                    className="btn btn-square btn-ghost"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      className="inline-block w-6 h-6 stroke-current"
+                      color="white"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M4 6h16M4 12h16M4 18h16"
+                      ></path>
+                    </svg>
+                  </label>
+                </div>
+                <div className="flex-1">
+                  <Link to="/" className="btn btn-ghost text-lg text-white">
+                    Quizify
+                  </Link>
+                </div>
+                <div className="flex-none hidden lg:block">
+                  <ul className="menu menu-horizontal flex-2">
+                    {/* Navbar menu content here */}
+                    <li>
+                      <Link
+                        to="/flashcards"
+                        className="btn btn-ghost text-base text-white"
+                      >
+                        Decks
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        to="/community"
+                        className="btn btn-ghost text-base text-white"
+                      >
+                        Community
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        to="/stats"
+                        className="btn btn-ghost text-base text-white"
+                      >
+                        Stats
+                      </Link>
+                    </li>
+                    <li>
+                      <span className="text-base text-white items-center justify-center btn-disabled">
+                        <FaFireAlt color="white" />
+                        {streak}
+                      </span>
+                    </li>
+                    <div className="self-center justify-center">
+                      <UserButton afterSignOutUrl="/" />
+                    </div>
+                  </ul>
+                </div>
+              </div>
+              {/* Page content here */}
             </div>
-            <Link
-              to="/flashcards"
-              className="btn btn-ghost text-base text-white"
-            >
-              Decks
-            </Link>
-            <Link
-              to="/community"
-              className="btn btn-ghost text-base text-white"
-            >
-              Community
-            </Link>
-            <span>
-              <FaFireAlt color="white" /> {streak}
-            </span>
-            <Link to="/stats" className="btn btn-ghost text-base text-white">
-              Stats
-            </Link>
-            <div className="flex-2 mr-2">
-              <UserButton afterSignOutUrl="/" />
+            <div className="drawer-side">
+              <label
+                htmlFor="my-drawer-3"
+                aria-label="close sidebar"
+                className="drawer-overlay"
+              ></label>
+              <ul className="menu p-4 w-80 min-h-full glass z-50 bg-neutral flex flex-col items-center">
+                {/* Sidebar content here */}
+                <li>
+                  <Link
+                    to="/flashcards"
+                    className="btn btn-ghost text-base text-white"
+                  >
+                    Decks
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/community"
+                    className="btn btn-ghost text-base text-white"
+                  >
+                    Community
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/stats"
+                    className="btn btn-ghost text-base text-white"
+                  >
+                    Stats
+                  </Link>
+                </li>
+                <li>
+                  <span className="text-base text-white items-center justify-center btn-disabled">
+                    <FaFireAlt color="white" />
+                    {streak}
+                  </span>
+                </li>
+                <div className="self-center justify-center">
+                  <UserButton afterSignOutUrl="/" />
+                </div>
+              </ul>
             </div>
           </div>
         </SignedIn>
@@ -102,7 +191,7 @@ const Navbars = ({
     setDeckName("");
     setDeckDesc("");
     setDeckCategory("Math");
-    setPriv(false);
+    setPriv(true);
   };
 
   const handleClose = () => {
@@ -131,7 +220,7 @@ const Navbars = ({
     setDeckDesc("");
     setDeckName("");
     setDeckCategory("");
-    setPriv(false);
+    setPriv(true);
   };
 
   if (page == "decks") {
@@ -282,9 +371,9 @@ const Navbars = ({
                     Community
                   </Link>
                 </li>
-                <li>
+                <div className="self-center justify-center">
                   <UserButton afterSignOutUrl="/" />
-                </li>
+                </div>
               </ul>
             </div>
           </div>
@@ -299,10 +388,7 @@ const Navbars = ({
           <ul className="menu p-4 w-80 min-h-full glass z-50 bg-neutral flex flex-col text-base">
             {/* Sidebar content here */}
             <li>
-              <Link
-                to="/flashcards"
-                className="btn btn-ghost text-base text-white"
-              >
+              <Link to="/" className="btn btn-ghost text-base text-white">
                 <FaCaretLeft></FaCaretLeft>Back
               </Link>
             </li>
@@ -330,9 +416,9 @@ const Navbars = ({
                 stats
               </Link>
             </li>
-            <li className="self-center">
+            <div className="self-center justify-center">
               <UserButton afterSignOutUrl="/" />
-            </li>
+            </div>
           </ul>
         </div>
       </div>
@@ -497,9 +583,9 @@ const Navbars = ({
                     Community
                   </Link>
                 </li>
-                <li>
+                <div className="self-center justify-center">
                   <UserButton afterSignOutUrl="/" />
-                </li>
+                </div>
               </ul>
             </div>
           </div>
@@ -551,11 +637,6 @@ const Navbars = ({
               </div>
             </li>
             <li>
-              <Link to="/stats" className="btn btn-ghost text-base text-white">
-                stats
-              </Link>
-            </li>
-            <li>
               <Link
                 to="/community"
                 className="btn btn-ghost text-base text-white"
@@ -564,9 +645,15 @@ const Navbars = ({
               </Link>
             </li>
 
-            <li className="self-center">
-              <UserButton afterSignOutUrl="/" />
+            <li>
+              <Link to="/stats" className="btn btn-ghost text-base text-white">
+                stats
+              </Link>
             </li>
+
+            <div className="self-center justify-center">
+              <UserButton afterSignOutUrl="/" />
+            </div>
           </ul>
         </div>
       </div>
@@ -626,9 +713,9 @@ const Navbars = ({
                     Stats
                   </Link>
                 </li>
-                <li>
+                <div className="self-center justify-center">
                   <UserButton afterSignOutUrl="/" />
-                </li>
+                </div>
               </ul>
             </div>
           </div>
@@ -655,9 +742,9 @@ const Navbars = ({
                 Stats
               </Link>
             </li>
-            <li className="self-center">
+            <div className="self-center justify-center">
               <UserButton afterSignOutUrl="/" />
-            </li>
+            </div>
           </ul>
         </div>
       </div>
@@ -723,9 +810,9 @@ const Navbars = ({
                     Community
                   </Link>
                 </li>
-                <li>
+                <div className="self-center justify-center">
                   <UserButton afterSignOutUrl="/" />
-                </li>
+                </div>
               </ul>
             </div>
           </div>
@@ -759,9 +846,9 @@ const Navbars = ({
                 Community
               </Link>
             </li>
-            <li className="self-center">
+            <div className="self-center justify-center">
               <UserButton afterSignOutUrl="/" />
-            </li>
+            </div>
           </ul>
         </div>
       </div>
@@ -827,9 +914,9 @@ const Navbars = ({
                     Stats
                   </Link>
                 </li>
-                <li>
+                <div className="self-center justify-center">
                   <UserButton afterSignOutUrl="/" />
-                </li>
+                </div>
               </ul>
             </div>
           </div>
@@ -861,9 +948,9 @@ const Navbars = ({
                 Stats
               </Link>
             </li>
-            <li className="self-center">
+            <div className="self-center justify-center">
               <UserButton afterSignOutUrl="/" />
-            </li>
+            </div>
           </ul>
         </div>
       </div>
