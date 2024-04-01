@@ -378,6 +378,11 @@ const Navbars = ({
                     Stats
                   </Link>
                 </li>
+                <li>
+                  <div className="text-base text-white">
+                    <FaFireAlt /> {streak}
+                  </div>
+                </li>
                 <div className="self-center justify-center">
                   <UserButton afterSignOutUrl="/" />
                 </div>
@@ -571,6 +576,7 @@ const Navbars = ({
                     <li>
                       <Link to="test">Test</Link>
                     </li>
+                    <li>{streak}</li>
                   </ul>
                 </div>
 
@@ -651,6 +657,11 @@ const Navbars = ({
                 Community
               </Link>
             </li>
+            <li>
+              <div className="text-base text-white">
+                <FaFireAlt /> {streak}
+              </div>
+            </li>
 
             <li>
               <Link to="/stats" className="btn btn-ghost text-base text-white">
@@ -711,6 +722,11 @@ const Navbars = ({
                   >
                     <FaCaretLeft></FaCaretLeft>Back
                   </button>
+                </li>
+                <li>
+                  <div className="text-base text-white">
+                    <FaFireAlt /> {streak}
+                  </div>
                 </li>
                 <li>
                   <Link

@@ -25,6 +25,7 @@ const CommunityDeck = ({ i, title, desc, category, communityDecks }) => {
         userId: user?.id.toString(),
         cards: communityDecks[i].cards,
         private: true,
+        coppied: true,
       };
 
       axios

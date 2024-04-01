@@ -110,6 +110,7 @@ const FlashcardDecks = () => {
               category={deck.category}
               onDelete={handleDeleteDecks}
               deckPrivate={deck.private}
+              coppied={deck.coppied}
             />
           ))}
         </ul>

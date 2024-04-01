@@ -4,7 +4,7 @@ import axios from "axios";
 import { useUser } from "@clerk/clerk-react";
 import { motion } from "framer-motion";
 
-const Deckcard = ({ i, title, desc, category, onDelete, deckPrivate }) => {
+const Deckcard = ({ i, title, desc, category, onDelete, deckPrivate, coppied }) => {
   const { user } = useUser();
   const userId = user?.id.toString();
 
@@ -70,7 +70,7 @@ const Deckcard = ({ i, title, desc, category, onDelete, deckPrivate }) => {
           >
             Delete
           </button>
-          <div className="form-control self-center ml-6">
+          {!coppied && <div className="form-control self-center ml-6">
             <span className="label-text self-center">Private:</span>
             <label className="label cursor-pointer">
               <input
@@ -80,7 +80,7 @@ const Deckcard = ({ i, title, desc, category, onDelete, deckPrivate }) => {
                 onChange={togglePrivate}
               />
             </label>
-          </div>
+          </div>}
         </div>
       </li>
     </>

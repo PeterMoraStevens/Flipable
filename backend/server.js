@@ -16,6 +16,42 @@ app.use(cors());
 
 // Set up MongoDB connection
 
+const copyLimits = {}; // Object to track copying limits for each user
+
+// Middleware to check and enforce the rate limit
+const rateLimitMiddleware = (req, res, next) => {
+  const userId = req.body.userId; // Assuming you have user information available in the request
+
+  // Initialize copying count for the user if it doesn't exist
+  if (!copyLimits[userId]) {
+    copyLimits[userId] = {
+      count: 0,
+      lastReset: Date.now(),
+    };
+  }
+
+  const now = Date.now();
+  const elapsedTimeSinceLastReset = now - copyLimits[userId].lastReset;
+
+  // Reset copying count if more than 1 minute has elapsed since last reset
+  if (elapsedTimeSinceLastReset > 60000) {
+    // 60000 milliseconds = 1 minute
+    copyLimits[userId].count = 0;
+    copyLimits[userId].lastReset = now;
+  }
+
+  // Check if user has exceeded the rate limit
+  if (copyLimits[userId].count >= 20) {
+    return res
+      .status(429)
+      .json({ error: "Rate limit exceeded. Please try again later." });
+  }
+
+  // Increment copying count and proceed with copying the deck
+  copyLimits[userId].count++;
+  next();
+};
+
 const DBURL = process.env.MONGODB_DATABASE_URL;
 app.use(cors());
 
@@ -67,6 +103,10 @@ const userSchema = new Schema({
         category: String,
         description: String,
         private: Boolean,
+        coppied: {
+          type: Boolean,
+          default: false,
+        },
         cards: [
           {
             term: String,
@@ -174,7 +214,7 @@ app.get("/getFlashcards/:deckNum", async (req, res) => {
 });
 
 // API endpoint to add a new deck to the user's decks
-app.post("/addDeck", async (req, res) => {
+app.post("/addDeck", rateLimitMiddleware, async (req, res) => {
   try {
     const newDeck = {
       title: req.body.title,
@@ -182,6 +222,7 @@ app.post("/addDeck", async (req, res) => {
       description: req.body.description,
       private: req.body.private,
       cards: req.body.cards || [],
+      coppied: req.body.coppied || false,
     };
     await User.findOneAndUpdate(
       { userId: req.body.userId },
@@ -196,7 +237,7 @@ app.post("/addDeck", async (req, res) => {
 });
 
 // API endpoint to add a new card to a specific deck
-app.post("/addCard/:deckNum", async (req, res) => {
+app.post("/addCard/:deckNum", rateLimitMiddleware, async (req, res) => {
   try {
     const newCard = {
       term: req.body.term,
@@ -384,7 +425,12 @@ app.get("/getCommunityDecks", async (req, res) => {
     // Aggregate to get only the decks from all users
     const decksAggregate = await User.aggregate([
       { $unwind: "$decks" },
-      { $match: { "decks.private": false } },
+      {
+        $match: {
+          "decks.private": false,
+          "decks.cards.coppied": { $ne: true }, // Exclude decks with coppied cards
+        },
+      },
       { $project: { _id: 0, decks: 1 } }, // Project only the decks array
       { $skip: skip },
       { $limit: limit },
@@ -396,7 +442,12 @@ app.get("/getCommunityDecks", async (req, res) => {
     // Count total public decks
     const totalDecksAggregate = await User.aggregate([
       { $unwind: "$decks" },
-      { $match: { "decks.private": false } },
+      {
+        $match: {
+          "decks.private": false,
+          "decks.cards.coppied": { $ne: true }, // Exclude decks with coppied cards
+        },
+      },
       { $count: "total" },
     ]);
 
@@ -418,7 +469,7 @@ app.get("/getCommunityDecks", async (req, res) => {
 });
 
 // API endpoint to change a user's deck's privacy option
-app.post("/updatePrivate", async (req, res) => {
+app.post("/updatePrivate", rateLimitMiddleware, async (req, res) => {
   try {
     const user = await User.findOne({ userId: req.body.userId });
     user.decks[req.body.deckNum].private =
