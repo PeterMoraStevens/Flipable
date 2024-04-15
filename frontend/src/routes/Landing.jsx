@@ -7,6 +7,33 @@ import { TypeAnimation } from "react-type-animation";
 import landingimg from "../assets/undraw_team_work_k-80-m.svg";
 import lost from "../assets/lost.png";
 import found from "../assets/through_the_park.png";
+import { InfiniteMovingCards } from "../components/infiniteCards";
+
+const testimonials = [
+  {
+    quote:
+      "I used Quizify and I felt super prepared for my final. The flashcards made studying feel more engaging, plus it's free!",
+    name: "Zagros R.",
+    title: "Oregon State Univeristy Alumni",
+  },
+  {
+    quote: "This is the best upcoming quiz app!",
+    name: "Sebastian T.",
+    title: "Current Oregon State Univeristy Student",
+  },
+  {
+    quote:
+      "Quizify is one of the most exciting new study apps being developed right now!",
+    name: "Peter M.",
+    title: "Current Oregon State Univeristy Student",
+  },
+  {
+    quote:
+      "I love Quizify's streak functionality! It encourages me to keep studying leading up to a final.",
+    name: "Annette T.",
+    title: "Current Oregon State Univeristy Student",
+  },
+];
 
 const Landing = () => {
   const slideInFromLeft = {
@@ -80,7 +107,7 @@ const Landing = () => {
             </svg>
           </Link>
         </div>
-        
+
         <motion.div
           initial="hidden"
           animate="visible"
@@ -94,16 +121,13 @@ const Landing = () => {
         initial="hidden"
         animate="visible"
         variants={slideInFromLeft}
-        className="diff aspect-[16/9] h-96 bg-accent mb-24"
+        className="mb-24"
       >
-        <div className="diff-item-1">
-          {/* <p className="self-center font-bold">Before Quizify</p> */}
-          <img src={lost} className=" object-contain" />
-        </div>
-        <div className="diff-item-2 bg-secondary">
-          <img src={found} className=" object-contain" />
-        </div>
-        <div className="diff-resizer">After</div>
+        <InfiniteMovingCards
+          items={testimonials}
+          direction="right"
+          speed="slow"
+        />
       </motion.div>
       <motion.div
         initial="hidden"

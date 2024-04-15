@@ -43,6 +43,16 @@ const Navbars = ({
     }
   }, [userId]); // Only re-run the effect if userId changes
 
+  if (page === "sign-up" || page === "sign-in") {
+    return (
+      <div className="w-full navbar glass bg-content">
+        <Link to="/" className="btn btn-ghost text-base text-white">
+          Quizify
+        </Link>
+      </div>
+    );
+  }
+
   if (page === "landing") {
     return (
       <>
@@ -112,7 +122,7 @@ const Navbars = ({
                         {streak}
                       </span>
                     </li>
-                    <div className="self-center justify-center">
+                    <div className="self-center justify-center -translate-y-1">
                       <UserButton afterSignOutUrl="/" />
                     </div>
                   </ul>
@@ -383,7 +393,7 @@ const Navbars = ({
                     <FaFireAlt /> {streak}
                   </div>
                 </li>
-                <div className="self-center justify-center">
+                <div className="self-center justify-center -translate-y-1">
                   <UserButton afterSignOutUrl="/" />
                 </div>
               </ul>
@@ -563,7 +573,10 @@ const Navbars = ({
                 </li>
 
                 <div className="dropdown text-white ">
-                  <label tabIndex={0} className="btn btn-ghost text-base ">
+                  <label
+                    tabIndex={0}
+                    className="btn btn-ghost text-base -translate-y-[3px]"
+                  >
                     Practice
                   </label>
                   <ul
@@ -576,7 +589,6 @@ const Navbars = ({
                     <li>
                       <Link to="test">Test</Link>
                     </li>
-                    <li>{streak}</li>
                   </ul>
                 </div>
 
@@ -596,7 +608,10 @@ const Navbars = ({
                     Community
                   </Link>
                 </li>
-                <div className="self-center justify-center">
+                <div className="text-base text-white self-center -translate-y-[3px] items-center justify-center flex flex-row">
+                  <FaFireAlt className="my-4 mx-2" /> {streak}
+                </div>
+                <div className="self-center justify-center -translate-y-[3px] ml-4">
                   <UserButton afterSignOutUrl="/" />
                 </div>
               </ul>
@@ -657,11 +672,9 @@ const Navbars = ({
                 Community
               </Link>
             </li>
-            <li>
-              <div className="text-base text-white">
-                <FaFireAlt /> {streak}
-              </div>
-            </li>
+            <div className="text-base text-white self-center items-center justify-center flex flex-row">
+              <FaFireAlt className="my-4 mx-2" /> {streak}
+            </div>
 
             <li>
               <Link to="/stats" className="btn btn-ghost text-base text-white">
@@ -723,11 +736,9 @@ const Navbars = ({
                     <FaCaretLeft></FaCaretLeft>Back
                   </button>
                 </li>
-                <li>
-                  <div className="text-base text-white">
-                    <FaFireAlt /> {streak}
-                  </div>
-                </li>
+                <div className="text-base text-white -translate-y-1 items-center justify-center flex flex-row">
+                  <FaFireAlt className="my-4 mx-2" /> {streak}
+                </div>
                 <li>
                   <Link
                     to="/stats"
@@ -736,7 +747,7 @@ const Navbars = ({
                     Stats
                   </Link>
                 </li>
-                <div className="self-center justify-center">
+                <div className="self-center justify-center -translate-y-[3px]">
                   <UserButton afterSignOutUrl="/" />
                 </div>
               </ul>
@@ -765,6 +776,9 @@ const Navbars = ({
                 Stats
               </Link>
             </li>
+            <div className="text-base text-white -translate-y-1 items-center justify-center flex flex-row">
+              <FaFireAlt className="my-4 mx-2" /> {streak}
+            </div>
             <div className="self-center justify-center">
               <UserButton afterSignOutUrl="/" />
             </div>
@@ -833,7 +847,10 @@ const Navbars = ({
                     Community
                   </Link>
                 </li>
-                <div className="self-center justify-center">
+                <div className="text-base text-white -translate-y-1 items-center justify-center flex flex-row">
+                  <FaFireAlt className="my-4 mx-2" /> {streak}
+                </div>
+                <div className="self-center justify-center -translate-y-[3px] ml-4">
                   <UserButton afterSignOutUrl="/" />
                 </div>
               </ul>
@@ -869,6 +886,9 @@ const Navbars = ({
                 Community
               </Link>
             </li>
+            <div className="text-base text-white -translate-y-1 items-center justify-center flex flex-row">
+              <FaFireAlt className="my-4 mx-2" /> {streak}
+            </div>
             <div className="self-center justify-center">
               <UserButton afterSignOutUrl="/" />
             </div>
@@ -937,7 +957,10 @@ const Navbars = ({
                     Stats
                   </Link>
                 </li>
-                <div className="self-center justify-center">
+                <div className="text-base text-white -translate-y-1 items-center justify-center flex flex-row">
+                  <FaFireAlt className="my-4 mx-2" /> {streak}
+                </div>
+                <div className="self-center justify-center ml-4 -translate-y-[3px]">
                   <UserButton afterSignOutUrl="/" />
                 </div>
               </ul>
@@ -971,7 +994,10 @@ const Navbars = ({
                 Stats
               </Link>
             </li>
-            <div className="self-center justify-center">
+            <div className="text-base text-white -translate-y-1 items-center justify-center flex flex-row">
+              <FaFireAlt className="my-4 mx-2" /> {streak}
+            </div>
+            <div className="self-center justify-center ml-2">
               <UserButton afterSignOutUrl="/" />
             </div>
           </ul>

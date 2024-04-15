@@ -50,7 +50,6 @@ async function grade(def1, def2, word) {
   return false;
 }
 
-
 async function gradeTest(realDefs, testDefs) {
   console.log("starting grading");
   let score = 0;

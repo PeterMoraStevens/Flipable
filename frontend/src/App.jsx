@@ -2,8 +2,6 @@ import {
   ClerkProvider,
   SignedIn,
   SignedOut,
-  SignIn,
-  SignUp,
   RedirectToSignIn,
 } from "@clerk/clerk-react";
 import { neobrutalism, dark } from "@clerk/themes";
@@ -21,6 +19,8 @@ import AboutUs from "./routes/AboutUs";
 import ContactUs from "./routes/ContactUs";
 import Stats from "./routes/Stats";
 import Community from "./routes/Community";
+import SignUpPage from "./routes/SignUp";
+import SignInPage from "./routes/SignIn";
 
 // we now have context for each componenet wanting to get access to flashcardDecks and flashcards
 export const FlashcardContext = createContext();
@@ -61,11 +61,11 @@ const ClerkRoutes = () => {
           <Route path="/" element={<Landing />} />
           <Route
             path="/sign-in/*"
-            element={<SignIn routing="path" path="/sign-in" />}
+            element={<SignInPage routing="path" path="/sign-in" />}
           />
           <Route
             path="/sign-up/*"
-            element={<SignUp routing="path" path="/sign-up" />}
+            element={<SignUpPage routing="path" path="/sign-up" />}
           />
           <Route
             path="/flashcards"
@@ -133,7 +133,7 @@ const ClerkRoutes = () => {
             }
           />
           <Route path="/about-us" element={<AboutUs></AboutUs>}></Route>
-          <Route path="/contact-us" element={<ContactUs></ContactUs>}></Route>
+          {/* <Route path="/contact-us" element={<ContactUs></ContactUs>}></Route> */}
           <Route
             path="/stats"
             element={

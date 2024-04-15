@@ -7,6 +7,7 @@ import Footer from "../components/Footer";
 import { FaCaretLeft, FaCaretRight } from "react-icons/fa";
 import { useParams } from "react-router-dom";
 import { useUser } from "@clerk/clerk-react";
+import { motion } from "framer-motion";
 
 function FlashcardsPractice() {
   const navigate = useNavigate();
@@ -18,6 +19,8 @@ function FlashcardsPractice() {
   const [progress, setProgress] = useState(1);
   const [isCardFlipped, setIsCardFlipped] = useState(false);
   const [hasLoaded, setHasLoaded] = useState(false);
+  const [gotStreak, setGotStreak] = useState(false);
+  const [curerntStreak, setCurrentStreak] = useState(0);
   const user = useUser().user;
   const user_id = user?.id.toString();
   const { deckNum } = useParams();
@@ -43,6 +46,32 @@ function FlashcardsPractice() {
         });
     }
   }, []);
+
+  useEffect(() => {
+    if (deck.length === 0 && hasLoaded) {
+      // Update streak and fetch user data when deck is completed
+      axios
+        .post("/incrementStreak", { userId: user_id })
+        .then(() => {
+          axios
+            .get("/getUser", {
+              params: {
+                userId: user_id,
+              },
+            })
+            .then((res) => {
+              setGotStreak(true); // Set gotStreak to true to trigger the pop-up
+              setCurrentStreak(res.data.currentStreak); // Update current streak
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  }, [deck, hasLoaded, setGotStreak, setCurrentStreak, user_id]);
 
   const canAddBack = deck.length === 1;
 
@@ -138,6 +167,28 @@ function FlashcardsPractice() {
 
     return (
       <>
+        {gotStreak && (
+          <motion.div
+            initial={{ opacity: 0, y: "100%" }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: "100%" }}
+            transition={{ duration: 0.5 }}
+            className="toast toast-bottom z-50"
+          >
+            <div className="alert alert-success">
+              <button
+                className="btn btn-error top-2 right-2"
+                onClick={() => setGotStreak(false)}
+              >
+                close
+              </button>
+              <span>
+                Congrats you've practed at least once today and have increased
+                your streaks to {curerntStreak}!
+              </span>
+            </div>
+          </motion.div>
+        )}
         <Navbars page="flashcard-practice"></Navbars>
         <div className="hero min-h-screen bg-neutral">
           <div className="hero-content text-center">

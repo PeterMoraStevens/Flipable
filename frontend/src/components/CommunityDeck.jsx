@@ -6,6 +6,7 @@ import CommunityFlashcard from "./CommunityFlashcard";
 import { FaCopy } from "react-icons/fa";
 import { motion } from "framer-motion";
 
+
 const CommunityDeck = ({ i, title, desc, category, communityDecks }) => {
   const modalName = `my_modal_${i}`;
   const user = useUser().user;
@@ -45,7 +46,6 @@ const CommunityDeck = ({ i, title, desc, category, communityDecks }) => {
 
   return (
     <>
-      {/* Your copy success toast */}
       {showCopyToast && (
         <motion.div
           initial={{ opacity: 0, y: "100%" }}

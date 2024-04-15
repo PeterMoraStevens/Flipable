@@ -5,9 +5,14 @@ import { FlashcardContext } from "../App";
 import Footer from "../components/Footer";
 import Navbars from "../components/Navbars";
 import Deckcard from "../components/Deckcard";
+import { FaCheckCircle, FaEdit } from "react-icons/fa";
+import { FaCircleXmark } from "react-icons/fa6";
+import { FaTrashAlt } from "react-icons/fa";
+
 const FlashcardDecks = () => {
   let ran = false;
   const [loading, setLoading] = useState(true);
+  const [currentDeleteIndex, setCurrentDeleteIndex] = useState(-1);
   const user = useUser().user;
   const user_id = user?.id.toString();
 
@@ -92,32 +97,61 @@ const FlashcardDecks = () => {
   }
 
   return (
-    <div className="bg-neutral">
-      <Navbars
-        page="decks"
-        flashDecks={flashDecks}
-        setFlashcardDecks={setFlashcardDecks}
-      ></Navbars>
-      <div className="bg-neutral"></div>
-      <div className=" min-h-screen">
-        <ul className="grid lg:grid-cols-3 sm:grid-cols-2 gap-4 m-4">
-          {flashDecks.map((deck, i) => (
-            <Deckcard
-              key={i}
-              i={i.toString()}
-              title={deck.title}
-              desc={deck.description}
-              category={deck.category}
-              onDelete={handleDeleteDecks}
-              deckPrivate={deck.private}
-              coppied={deck.coppied}
-            />
-          ))}
-        </ul>
-      </div>
+    <>
+      <dialog id="delete-deck" className="modal">
+        <div className="modal-box">
+          <h3 className="font-bold text-lg">Watch out!</h3>
+          <p className="py-4">
+            Are you absolutely sure you want to delete this deck? It will be
+            unrecoverable!
+          </p>
+          <div className="modal-action">
+            <form method="dialog">
+              {/* if there is a button in form, it will close the modal */}
 
-      <Footer></Footer>
-    </div>
+              <button className="btn hover:btn-success text-success font-semibold hover:text-white border border-success hover:border-transparent rounded-lg">
+                <FaCircleXmark />
+              </button>
+              <button
+                className="btn ml-4 hover:btn-error text-error font-semibold hover:text-white border border-error hover:border-transparent rounded-lg"
+                onClick={() => handleDeleteDecks(currentDeleteIndex)}
+              >
+                <FaTrashAlt />
+              </button>
+            </form>
+          </div>
+        </div>
+      </dialog>
+      <div className="bg-neutral">
+        <Navbars
+          page="decks"
+          flashDecks={flashDecks}
+          setFlashcardDecks={setFlashcardDecks}
+        ></Navbars>
+        <div className="bg-neutral"></div>
+        <div className=" min-h-screen">
+          <ul className="grid lg:grid-cols-3 sm:grid-cols-2 gap-4 m-4">
+            {flashDecks.map((deck, i) => (
+              <Deckcard
+                key={i}
+                i={i.toString()}
+                title={deck.title}
+                desc={deck.description}
+                category={deck.category}
+                onDelete={() => {
+                  document.getElementById("delete-deck").showModal();
+                  setCurrentDeleteIndex(i);
+                }}
+                deckPrivate={deck.private}
+                coppied={deck.coppied}
+              />
+            ))}
+          </ul>
+        </div>
+
+        <Footer></Footer>
+      </div>
+    </>
   );
 };
 

@@ -3,8 +3,18 @@ import { useState } from "react";
 import axios from "axios";
 import { useUser } from "@clerk/clerk-react";
 import { motion } from "framer-motion";
+import { FaCircleXmark } from "react-icons/fa6";
+import { FaTrashAlt } from "react-icons/fa";
 
-const Deckcard = ({ i, title, desc, category, onDelete, deckPrivate, coppied }) => {
+const Deckcard = ({
+  i,
+  title,
+  desc,
+  category,
+  onDelete,
+  deckPrivate,
+  coppied,
+}) => {
   const { user } = useUser();
   const userId = user?.id.toString();
 
@@ -65,22 +75,24 @@ const Deckcard = ({ i, title, desc, category, onDelete, deckPrivate, coppied }) 
         </Link>
         <div className="flex justify-center">
           <button
-            className="btn btn-error rounded m-2 p-2"
+            className="btn btn-error rounded m-2"
             onClick={() => onDelete(i)}
           >
-            Delete
+            <FaTrashAlt color="white" />
           </button>
-          {!coppied && <div className="form-control self-center ml-6">
-            <span className="label-text self-center">Private:</span>
-            <label className="label cursor-pointer">
-              <input
-                type="checkbox"
-                className="toggle toggle-warning"
-                checked={isPrivate}
-                onChange={togglePrivate}
-              />
-            </label>
-          </div>}
+          {!coppied && (
+            <div className="form-control self-center ml-6">
+              <span className="label-text self-center">Private:</span>
+              <label className="label cursor-pointer">
+                <input
+                  type="checkbox"
+                  className="toggle toggle-warning"
+                  checked={isPrivate}
+                  onChange={togglePrivate}
+                />
+              </label>
+            </div>
+          )}
         </div>
       </li>
     </>
