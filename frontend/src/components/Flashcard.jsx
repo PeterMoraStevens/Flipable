@@ -1,5 +1,16 @@
-const Flashcard = ({ term, definition, onDelete, i }) => {
+import { FaCheckCircle, FaEdit } from "react-icons/fa";
+import { FaCircleXmark } from "react-icons/fa6";
+import { FaTrashAlt } from "react-icons/fa";
 
+const Flashcard = ({
+  term,
+  definition,
+  onDelete,
+  onEdit,
+  i,
+  setEditTerm,
+  setEditDef,
+}) => {
   return (
     <li className="flex justify-center items-center">
       <label className="swap swap-flip text-9xl ">
@@ -12,17 +23,21 @@ const Flashcard = ({ term, definition, onDelete, i }) => {
           </div>
           <div className="flex justify-center">
             <button
-              className="m-2 p-2 py-4 btn btn-neutral rounded"
-              onClick={() => console.log("Edit clicked")}
+              className="m-2 btn btn-neutral rounded self-center justify-center text-center"
+              onClick={() => {
+                onEdit(i);
+                setEditTerm(term);
+                setEditDef(definition);
+              }}
             >
-              Edit
+              <FaEdit color="white" className="text-xl translate-x-[2px]" />
             </button>
 
             <button
-              className="btn btn-error rounded m-2 p-2"
+              className="btn btn-error rounded m-2"
               onClick={() => onDelete(i)}
             >
-              Delete
+              <FaTrashAlt className="text-lg" color="white" />
             </button>
           </div>
         </div>

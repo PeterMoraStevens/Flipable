@@ -40,9 +40,9 @@ async function grade(def1, def2, word) {
 
 */
 
-let realDefs = ["a greeting", "a farewell"];
-let testDefs = ["A way to great someone", "A banana"];
-let terms = ["hello", "goodbye"];
+// let realDefs = ["a greeting", "a farewell"];
+// let testDefs = ["A way to great someone", "A banana"];
+// let terms = ["hello", "goodbye"];
 
 async function gradeTest(realDefs, testDefs) {
   console.log("starting grading");

@@ -1,21 +1,22 @@
 import Navbars from "../components/Navbars";
-import { SignIn } from "@clerk/clerk-react";
+import { SignUp } from "@clerk/clerk-react";
 import { neobrutalism } from "@clerk/themes";
 import Footer from "../components/Footer";
 
-const SignInPage = () => {
+const SignUpPage = () => {
   return (
     <>
-      <Navbars page="sign-in" />
+      <Navbars page="sign-up" />
       <div className="hero min-h-screen">
         <div className="hero-content flex-col lg:flex-row-reverse">
           <div className="text-center lg:text-left">
-            <h1 className="text-5xl font-bold">Sign In Here!</h1>
+            <h1 className="text-5xl font-bold">Sign Up now!</h1>
             <p className="py-6">
-              We're excited to see you back! We hope you'll enjoy your stay!
+              We're excited to see you joining us! Thank you for taking the time
+              to sign up!
             </p>
           </div>
-          <SignIn
+          <SignUp
             appearance={{
               baseTheme: [neobrutalism],
               variables: {
@@ -28,7 +29,7 @@ const SignInPage = () => {
             }}
             path="/sign-in"
             redirectUrl="/"
-            signUpUrl="/sign-up"
+            signInUrl="/sign-in"
           />
         </div>
       </div>
@@ -37,4 +38,4 @@ const SignInPage = () => {
   );
 };
 
-export default SignInPage;
+export default SignUpPage;

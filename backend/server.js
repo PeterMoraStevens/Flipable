@@ -103,6 +103,10 @@ const userSchema = new Schema({
         category: String,
         description: String,
         private: Boolean,
+        likes: {
+          type: Number,
+          default: 0,
+        },
         coppied: {
           type: Boolean,
           default: false,
@@ -254,15 +258,15 @@ app.post("/addCard/:deckNum", rateLimitMiddleware, async (req, res) => {
 });
 
 // API endpoint to edit a card in a specific deck
-app.post("/editCard/:decknum", async (req, res) => {
+app.post("/editCard/:deckNum", async (req, res) => {
   try {
     const newCard = {
       term: req.body.cardTerm,
       definition: req.body.cardDef,
     };
     const currentUser = await User.findOne({ userId: req.body.userId });
-    currentUser.decks[req.params.decknum].splice(
-      req.params.decknum,
+    currentUser.decks[req.params.deckNum].cards.splice(
+      req.body.cardIndex,
       1,
       newCard
     );
@@ -337,6 +341,7 @@ app.get("/getUser", async (req, res) => {
       currentStreak: currentUser.currentStreak,
       longestStreak: currentUser.longestStreak,
       userName: currentUser.userName,
+      hasPracticed: currentUser.hasPracticed,
     };
     res.status(200).json(response);
   } catch (err) {
@@ -486,7 +491,7 @@ const updateStreaks = async () => {
   try {
     const users = await User.find();
 
-    users.forEach(async (user) => {
+    for (let user of users) {
       // Check if the user has studied today
       if (!user.hasPracticed) {
         // Reset current streak to 0
@@ -494,11 +499,11 @@ const updateStreaks = async () => {
       }
 
       // Reset practicedToday flag for the next day
-      user.practicedToday = false;
+      user.hasPracticed = false;
 
       // Save the updated user object
       await user.save();
-    });
+    }
 
     console.log("Streaks updated successfully.");
   } catch (error) {
@@ -507,12 +512,16 @@ const updateStreaks = async () => {
 };
 
 // Schedule the function to run daily at 11:59pm PST
-cron.schedule("59 23 * * *", () => {
-  // Convert current time to PST timezone
-  const currentTimePST = moment().tz("America/Los_Angeles").format();
+cron.schedule("59 23 * * *", async () => {
+  try {
+    // Convert current time to PST timezone
+    const currentTimePST = moment().tz("America/Los_Angeles").format();
 
-  console.log(`Running updateStreaks function at ${currentTimePST}`);
-  updateStreaks();
+    console.log(`Running updateStreaks function at ${currentTimePST}`);
+    await updateStreaks();
+  } catch (error) {
+    console.error("Error running updateStreaks schedule:", error);
+  }
 });
 
 app.get("*", (req, res) => {
