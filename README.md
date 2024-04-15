@@ -4,7 +4,7 @@ Introducing Flipable – a cutting-edge app transforming traditional flashcard l
 
 ## Run
 
-To run Quizify on your local machine -
+To run Flipable on your local machine -
 
 Clone the github repo and install all dependencies by typing  `npm i` in each folder
 
