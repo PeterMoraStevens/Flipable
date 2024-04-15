@@ -1,6 +1,6 @@
-# Quizify
+# Flipable
 
-Introducing Quizify – a cutting-edge app transforming traditional flashcard learning. Our platform goes beyond memorization, offering flexible tests that prioritize conceptual understanding over perfect matches. Quizify ensures a nuanced learning experience through creating tailored flashcard decks, assess key concepts, and elevate your learning journey. Explore the future of dynamic learning with Quizify!
+Introducing Flipable – a cutting-edge app transforming traditional flashcard learning. Our platform goes beyond memorization, offering flexible tests that prioritize conceptual understanding over perfect matches. Flipable ensures a nuanced learning experience through creating tailored flashcard decks, assess key concepts, and elevate your learning journey. Explore the future of dynamic learning with Quizify!
 
 ## Run
 
